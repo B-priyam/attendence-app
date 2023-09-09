@@ -8,7 +8,7 @@ const Takeattendence = (props) => {
   const [data, setdata] = useState([]);
   let date = new Date();
   let day = date.getDay() + "" + date.getMonth() + "" + date.getFullYear();
-  // console.log(props);
+  console.log(props);
   const showdata = async () => {
     const res = await fetch(
       `/getstudents?class=${props.class}&year=${props.year}&div=${props.div}`,
