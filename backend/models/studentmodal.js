@@ -22,7 +22,7 @@ const studentSchema = mongoose.Schema(
       type: String,
       default: "/images/profile_pic.png",
     },
-    clas: {
+    Class: {
       type: String,
     },
     div: {

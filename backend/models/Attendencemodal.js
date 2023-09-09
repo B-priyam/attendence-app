@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+const date = new Date();
 const AttendenceSchema = mongoose.Schema({
   Date: {
     type: String,
@@ -27,7 +28,10 @@ const AttendenceSchema = mongoose.Schema({
     {
       name: String,
       rollno: String,
-      attendenceStatus: String,
+      attendenceStatus: {
+        type: String,
+        default: date.getDay() + "" + date.getMonth() + "" + date.getFullYear(),
+      },
     },
   ],
 });

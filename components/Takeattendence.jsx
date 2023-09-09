@@ -6,16 +6,21 @@ import { useNavigate } from "react-router-dom";
 const Takeattendence = (props) => {
   const [students, setstudents] = useState([]);
   const [data, setdata] = useState([]);
-
-  const navigate = useNavigate();
+  let date = new Date();
+  let day = date.getDay() + "" + date.getMonth() + "" + date.getFullYear();
+  // console.log(props);
   const showdata = async () => {
-    const res = await fetch("/getstudents", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `/getstudents?class=${props.class}&year=${props.year}&div=${props.div}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const data = await res.json();
+    // console.log(data);
     setstudents(data.data);
   };
 
@@ -30,30 +35,35 @@ const Takeattendence = (props) => {
         "0px 0px 15px black"),
         (filter = blur("2px"));
   };
-
+  // var day = new Date();
   const submitHandler = async () => {
-    const res = await fetch("/postAttendence", {
+    const res = await fetch(`/postAttendence?day=${props.day}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        Class: students[0].clas,
+        clas: students[0].clas,
         Div: students[0].div,
-        Year: students[0].year,
-        Time: props.time,
-        Teacher: props.teacher,
-        Subject: props.subject,
-        StudentData: data,
+        // Year: students[0].year,
+        // Time: props.time,
+        // Teacher: props.teacher,
+        // Subject: props.subject,
+        // StudentData: data,
+        // id: props.id,
+        // year: props.year,
+        // div: props.div,
+        // updatedDay: day,
       }),
     });
-    const data2 = await res.json();
-    if (!data2) {
-      alert("An Error Occurred...");
-    } else {
-      alert("Attendence taken successfully");
-      window.location.reload(false);
-    }
+    const data1 = await res.json();
+    console.log(data1);
+    // if (!data2) {
+    //   alert("An Error Occurred...");
+    // } else {
+    //   alert("Attendence taken successfully");
+    //   window.location.reload(false);
+    // }
   };
 
   return (

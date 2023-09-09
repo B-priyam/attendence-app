@@ -9,9 +9,7 @@ const Teachers = require("../models/teachermodal.js");
 const TT = require("../models/Timetablemodal.js");
 const Attendence = require("../models/Attendencemodal.js");
 const bcrypt = require("bcrypt");
-const { LocalStorage } = require("node-localstorage");
-var localStorage = require("node-localstorage").LocalStorage,
-  localStorage = new LocalStorage("./scratch");
+const mongoose = require("mongoose");
 // const jwt = require("jsonwebtoken");
 
 app.use(express.urlencoded({ extended: true }));
@@ -32,7 +30,7 @@ app.post("/students", (req, res) => {
     Roll_no,
     Id_no,
     profilePic,
-    clas,
+    Class: clas,
     div,
     year,
     email,
@@ -67,14 +65,15 @@ app.post("/teachers", async (req, res) => {
 });
 
 app.post("/post/TT", (req, res) => {
-  const { clas, year, day, time, Timetable } = req.body;
+  const { clas, year, day, time, Timetable, div } = req.body;
 
   const data = new TT({
-    clas,
+    Class: clas,
     year,
     time,
     day,
     Timetable,
+    div,
   });
   data.save();
   res.send(data);
@@ -84,7 +83,6 @@ app.get("/getTT", async (req, res) => {
   let currentDay = req.query.day;
   let Class = req.query.Class;
   let year = req.query.year;
-  // const check = Timetable.teacher;
   try {
     const data = await TT.findOne({
       day: currentDay,
@@ -108,7 +106,24 @@ app.get("/getTT/teacher", async (req, res) => {
   try {
     let day = req.query.day;
     const data = await TT.find({ day: day });
-    res.status(200).json(data);
+
+    data.map((val) => {
+      val.Timetable.map(async (val) => {
+        if (val.updatedDay < req.query.date) {
+          const update = await TT.updateOne(
+            { day: day, "Timetable._id": val._id },
+            {
+              $set: {
+                "Timetable.$.status": "nottaken",
+              },
+            }
+          );
+          // val.status = "nottaken";
+        }
+        console.log(val);
+      });
+    });
+    res.status(200).send(data);
   } catch (e) {
     return res.status(400).send(e.message);
   }
@@ -116,17 +131,18 @@ app.get("/getTT/teacher", async (req, res) => {
 
 app.get("/getstudents", async (req, res) => {
   try {
-    const data = await students.find({ class: "bscit" });
+    const clas = req.query.class;
+    const year = req.query.year;
+    const div = req.query.div;
+    const data = await students.find({ clas, year, div });
     res.send({ status: "ok", data });
   } catch (err) {
     return res.status(500).send(e.message);
   }
 });
 
-app.post("/postAttendence", (req, res) => {
-  const { clas, Div, Year, Time, Teacher, Subject, StudentData } = req.body;
-
-  const data = new Attendence({
+app.post("/postAttendence", async (req, res) => {
+  const {
     clas,
     Div,
     Year,
@@ -134,9 +150,45 @@ app.post("/postAttendence", (req, res) => {
     Teacher,
     Subject,
     StudentData,
+    id,
+    div,
+    year,
+    updatedDay,
+  } = req.body;
+
+  const data = new Attendence({
+    Class: clas,
+    Div,
+    Year,
+    Time,
+    Teacher,
+    Subject,
+    StudentData,
   });
-  data.save();
-  res.send(data);
+  console.log(updatedDay);
+  const day = req.query.day;
+  const find = await TT.findOne({ day, Class: clas, div, year });
+  // res.send(find);
+  if (find) {
+    const update = await TT.updateOne(
+      { day: "monday", Class: clas, Div, Year, "Timetable._id": id },
+      {
+        $set: {
+          "Timetable.$.status": "taken",
+          "Timetable.$.updatedDay": updatedDay,
+        },
+      }
+    );
+    if (update) {
+      // data.save();
+      // res.send(data);
+      res.send("done");
+    } else {
+      res.send("error");
+    }
+  } else {
+    res.send("data not found");
+  }
 });
 
 app.post("/signin/teacher", async (req, res) => {
@@ -189,6 +241,14 @@ app.post("/signin/student", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(400).send(error.message);
+  }
+});
+
+app.patch("/getTT", async (req, res) => {
+  try {
+    const id = req.query.id;
+  } catch (error) {
+    res.send(error.message);
   }
 });
 
