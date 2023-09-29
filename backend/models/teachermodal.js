@@ -21,17 +21,13 @@ const teacherSchema = mongoose.Schema(
     password: {
       type: String,
     },
+    cloudinary: {
+      type: String,
+    },
     profilePic: {
       type: String,
       default: "/images/profile_pic.png",
     },
-    tokens: [
-      {
-        token: {
-          type: String,
-        },
-      },
-    ],
   },
   {
     timestamps: true,
@@ -48,7 +44,7 @@ teacherSchema.pre("save", async function (next) {
 teacherSchema.methods.generateAuthToken = async function () {
   try {
     let token = jwt.sign({ _id: this._id }, process.env.SECRET_KEY);
-    this.tokens = this.tokens.concat({ token: token });
+    // this.tokens = this.tokens.concat({ token: token });
     await this.save();
     return token;
   } catch (err) {

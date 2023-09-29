@@ -5,8 +5,8 @@
   padding-bottom: 6px;
   padding-left: 131px;
   padding-right: 132px;
-  /* background: linear-gradient(183deg, #4945FC 0%, rgba(252.88, 244.45, 244.45, 0) 100%); */
-  background: rgba(8, 235, 72, 0.09);
+  background: rgba(243, 162, 40, 0.3);
+  color: black;
   justify-content: center;
   align-items: center;
   display: inline-flex;
@@ -25,10 +25,11 @@
 .content {
   text-align: center;
   color: #123050;
-  font-size: 40px;
+  font-size: 25px;
   font-family: Jacques Francois;
   font-weight: 400;
-  text-transform: capitalize;
+  color: black;
+  text-transform: uppercase;
   line-height: 189px;
   word-wrap: break-word;
 }

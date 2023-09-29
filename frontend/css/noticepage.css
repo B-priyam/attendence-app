@@ -1,0 +1,23 @@
+.inputBox {
+  min-height: 10px;
+  display: flex;
+  justify-content: center;
+  width: 90vw;
+  margin: 10px auto;
+  margin-bottom: -50px;
+}
+.shownotice {
+  display: flex;
+  justify-content: center;
+  width: 90vw;
+  margin: 100px auto;
+}
+.shownotice ul li {
+  padding: 10px 0px;
+  position: relative;
+  max-height: max-content;
+  min-height: max-content;
+  text-align: center;
+  list-style: none;
+  max-width: 95%;
+}

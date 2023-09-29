@@ -1,14 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { Box, Image, Text, Container } from "@chakra-ui/react";
+import {
+  Box,
+  Image,
+  Text,
+  Container,
+  background,
+  Td,
+  Tr,
+  List,
+  UnorderedList,
+  ListItem,
+} from "@chakra-ui/react";
 import "/css/takeattendence.css";
 import { useNavigate } from "react-router-dom";
 
 const Takeattendence = (props) => {
   const [students, setstudents] = useState([]);
   const [data, setdata] = useState([]);
+
+  const uniquedata = data.filter(
+    (val, index, self) =>
+      self.findLastIndex((val2) => val2.rollno === val.rollno) === index
+  );
+
   let date = new Date();
-  let day = date.getDay() + "" + date.getMonth() + "" + date.getFullYear();
-  console.log(props);
+  let day =
+    date.getDate() + "" + (date.getMonth() + 1) + "" + date.getFullYear();
   const showdata = async () => {
     const res = await fetch(
       `/getstudents?class=${props.class}&year=${props.year}&div=${props.div}`,
@@ -20,7 +37,6 @@ const Takeattendence = (props) => {
       }
     );
     const data = await res.json();
-    // console.log(data);
     setstudents(data.data);
   };
 
@@ -30,12 +46,7 @@ const Takeattendence = (props) => {
 
   const Attendence = ({ name, roll_no, Attendence }) => {
     setdata([...data, { name, rollno: roll_no, attendenceStatus: Attendence }]);
-    if (Attendence.value == "Absent")
-      (document.getElementsByClassName("btn").style.boxShadow =
-        "0px 0px 15px black"),
-        (filter = blur("2px"));
   };
-  // var day = new Date();
   const submitHandler = async () => {
     const res = await fetch(`/postAttendence?day=${props.day}`, {
       method: "POST",
@@ -43,36 +54,65 @@ const Takeattendence = (props) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        clas: students[0].clas,
+        clas: students[0].Class,
         Div: students[0].div,
-        // Year: students[0].year,
-        // Time: props.time,
-        // Teacher: props.teacher,
-        // Subject: props.subject,
-        // StudentData: data,
-        // id: props.id,
-        // year: props.year,
-        // div: props.div,
-        // updatedDay: day,
+        Year: students[0].year,
+        Time: props.time,
+        Teacher: props.teacher,
+        Subject: props.subject,
+        StudentData: uniquedata,
+        id: props.id,
+        year: props.year,
+        div: props.div,
+        updatedDay: day,
       }),
     });
-    const data1 = await res.json();
-    console.log(data1);
-    // if (!data2) {
-    //   alert("An Error Occurred...");
-    // } else {
-    //   alert("Attendence taken successfully");
-    //   window.location.reload(false);
-    // }
+    const data2 = await res.json();
+    // console.log(data2);
+    if (!data2) {
+      alert("An Error Occurred...");
+    } else {
+      alert("Attendence taken successfully");
+      window.location.reload(false);
+    }
+  };
+  const changeColor = (color, index) => {
+    // console.log(event.target);
+    document.getElementsByClassName("buttons")[index].style.background =
+      "white";
+
+    document.getElementsByClassName(`button-${color}`)[
+      index
+    ].style.background = `${color}`;
   };
 
   return (
     <div>
-      <ul className="classUl">
-        <li style={{ padding: "10px 60px" }}>Lecture Time : {props.time}</li>
-        <li style={{ padding: "10px 60px" }}>Teacher : {props.teacher}</li>
-        <li style={{ padding: "10px 60px" }}>Subject : {props.subject}</li>
-      </ul>
+      <List></List>
+      <UnorderedList className="classUl">
+        <ListItem
+          listStyleType={"none"}
+          padding={{ base: "10px 10px", md: "10px 40px", lg: "10px 60px" }}
+          fontSize={{ base: "15px", md: "20px", lg: "24px" }}
+          ml={{ base: "-20px" }}
+        >
+          <b>Lecture Time : {props.time}</b>
+        </ListItem>
+        <ListItem
+          listStyleType={"none"}
+          padding={{ base: "10px 10px", md: "10px 40px", lg: "10px 60px" }}
+          fontSize={{ base: "15px", md: "20px", lg: "24px" }}
+        >
+          <b>Teacher : {props.teacher}</b>
+        </ListItem>
+        <ListItem
+          listStyleType={"none"}
+          padding={{ base: "10px 10px", md: "10px 40px", lg: "10px 60px" }}
+          fontSize={{ base: "15px", md: "20px", lg: "24px" }}
+        >
+          <b>Subject : {props.subject}</b>
+        </ListItem>
+      </UnorderedList>
 
       <div className={"data"}>
         {students.map((val, index) => {
@@ -84,14 +124,14 @@ const Takeattendence = (props) => {
                 justifyContent="center"
                 p={3}
                 bg={"#0E2954"}
-                maxWidth="max-content"
-                minW={"200px"}
+                maxWidth={{ base: "170px", lg: "max-content" }}
+                minW={{ lg: "200px" }}
                 m="40px 0px 15px 0px"
                 borderRadius="10px"
                 borderWidth="1px"
               >
                 <Text
-                  fontSize="24px"
+                  fontSize={{ base: "12px", lg: "24px" }}
                   color={"whiteAlpha.900"}
                   textAlign="center"
                   mb={"10px"}
@@ -100,16 +140,16 @@ const Takeattendence = (props) => {
                 </Text>
                 <Image
                   borderRadius="full"
-                  width="100%"
+                  width={{ base: "60%" }}
                   margin={"auto"}
                   boxSize="130px"
                   // ml={"1.1rem"}
-                  src="../images/profile_pic.png"
+                  src={val.profilePic}
                   alt="Dan Abramov"
                 />
 
                 <Text
-                  fontSize="18px"
+                  fontSize={{ base: "12px", lg: "18px" }}
                   textAlign="center"
                   color={"whiteAlpha.900"}
                   m={"10px"}
@@ -124,74 +164,46 @@ const Takeattendence = (props) => {
                   }}
                 >
                   <div
-                    style={{
-                      height: "40px",
-                      width: "40px",
-                      borderRadius: "50px",
-                      background: "red",
-                      fontWeight: "500",
-                      fontSize: "32px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      cursor: "pointer",
-                    }}
+                    className="buttons button-red"
                     value="A"
+                    id="red"
                     onClick={() => {
                       Attendence({
                         name: val.name,
                         roll_no: val.Roll_no,
                         Attendence: "Absent",
                       });
+                      changeColor("red", index);
                     }}
-                    className="btn"
                   >
                     A
                   </div>
                   <div
-                    style={{
-                      height: "40px",
-                      width: "40px",
-                      borderRadius: "50px",
-                      background: "green",
-                      fontWeight: "500",
-                      fontSize: "32px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      cursor: "pointer",
-                    }}
+                    className="button-green buttons"
                     value="P"
+                    id="green"
                     onClick={() => {
                       Attendence({
                         name: val.name,
                         roll_no: val.Roll_no,
                         Attendence: "Present",
                       });
+                      changeColor("green", index);
                     }}
                   >
                     P
                   </div>
                   <div
-                    style={{
-                      height: "40px",
-                      width: "40px",
-                      borderRadius: "50px",
-                      background: "yellow",
-                      fontWeight: "500",
-                      fontSize: "32px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      cursor: "pointer",
-                    }}
+                    className="button-yellow buttons"
                     value="L"
+                    id="yellow"
                     onClick={() => {
                       Attendence({
                         name: val.name,
                         roll_no: val.Roll_no,
                         Attendence: "Late",
                       });
+                      changeColor("yellow", index);
                     }}
                   >
                     L
@@ -202,7 +214,7 @@ const Takeattendence = (props) => {
           );
         })}
       </div>
-      {data.length == students.length ? (
+      {uniquedata.length == students.length ? (
         <div style={{ display: "flex" }}>
           <button
             style={{

@@ -1,15 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
+import App from "./App";
 import "./index.css";
 import { ChakraProvider } from "@chakra-ui/react";
-import AddStudents from "../components/AddStudents.jsx";
+import { CookiesProvider } from "react-cookie";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ChakraProvider>
-      <App />
-      {/* <AddStudents /> */}
+      <CookiesProvider>
+        <App />
+      </CookiesProvider>
     </ChakraProvider>
   </React.StrictMode>
 );

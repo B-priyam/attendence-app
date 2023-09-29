@@ -2,29 +2,41 @@ const express = require("express");
 require("./conn.js");
 const app = express();
 const dotenv = require("dotenv");
-dotenv.config({ path: "../../.env" });
-const PORT = process.env.PORT;
+dotenv.config({ path: "../.env" });
+const PORT = process.env.PORT || 5000;
 const students = require("../models/studentmodal.js");
 const Teachers = require("../models/teachermodal.js");
 const TT = require("../models/Timetablemodal.js");
 const Attendence = require("../models/Attendencemodal.js");
+const Notice = require("../models/noticemodel.js");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
-// const jwt = require("jsonwebtoken");
-
+const cld = require("cloudinary").v2;
+const jwt = require("jsonwebtoken");
+const path = require("path");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("", (req, res) => {
-  // res.cookie("name", "priyam");
-  localStorage.setItem("user", "hello");
-
-  res.send("hello world");
+cld.config({
+  cloud_name: "priyam3801h",
+  api_key: "171723684483845",
+  api_secret: "_f_ogbGIp6mJoRbVybr3JTdpknE",
 });
 
-app.post("/students", (req, res) => {
-  const { name, Roll_no, Id_no, clas, div, year, email, password, profilePic } =
-    req.body;
+app.post("/students", async (req, res) => {
+  const {
+    name,
+    Roll_no,
+    Id_no,
+    clas,
+    div,
+    year,
+    email,
+    password,
+    profilePic,
+    confirmpassword,
+    cloudinary,
+  } = req.body;
   const data = new students({
     name,
     Roll_no,
@@ -35,20 +47,49 @@ app.post("/students", (req, res) => {
     year,
     email,
     password,
+    cloudinary,
   });
+  if (
+    !name ||
+    !email ||
+    !password ||
+    !Id_no ||
+    !Roll_no ||
+    !clas ||
+    !div ||
+    !year
+  ) {
+    return res.status(400).json({ message: "pls fill all details" });
+  }
+  const userExists = await students.findOne({ Id_no: Id_no });
+  if (userExists) {
+    return res.status(400).json({ message: "Student Already Registered" });
+  }
+  if (password !== confirmpassword) {
+    return res.status(400).json({ message: "Passwords do not match" });
+  }
   data
     .save()
     .then(() => {
       return res.status(201).json({ data: "Student added successfully" });
     })
     .catch((e) => {
-      return res.status(400).json(e.message);
+      console.log(e.message);
+      return res.status(400).json({ message: e.message });
     });
 });
 
 app.post("/teachers", async (req, res) => {
   try {
-    const { UID, name, email, password, profilePic } = req.body;
+    const {
+      UID,
+      name,
+      email,
+      password,
+      profilePic,
+      confirmpassword,
+      cloudinary,
+    } = req.body;
 
     const data = new Teachers({
       UID,
@@ -56,11 +97,22 @@ app.post("/teachers", async (req, res) => {
       email,
       password,
       profilePic,
+      cloudinary,
     });
+    if (!name || !email || !password || !UID) {
+      return res.status(400).json({ message: "pls fill all details" });
+    }
+    const userExists = await Teachers.findOne({ UID: UID });
+    if (userExists) {
+      return res.status(400).json({ message: "Teacher Already Registered" });
+    }
+    if (password !== confirmpassword) {
+      return res.status(400).json({ message: "pls fill all details" });
+    }
     await data.save();
     res.status(201).json({ message: req.body });
   } catch (e) {
-    res.send(e.message);
+    res.status(400).json({ message: e.message });
   }
 });
 
@@ -83,20 +135,16 @@ app.get("/getTT", async (req, res) => {
   let currentDay = req.query.day;
   let Class = req.query.Class;
   let year = req.query.year;
+  let div = req.query.div;
   try {
     const data = await TT.findOne({
       day: currentDay,
       Class: Class,
       year: year,
+      div: div,
     });
-    // data.map((val) => {
-    //   val.Timetable.map((val) => {
-    //     if (val.teacher == teacher) {
-    //       console.log(val.teacher);
-    //     }
-    //   });
-    // });
-    res.status(200).send(data);
+    // console.log(data);
+    res.status(200).json(data);
   } catch (e) {
     return res.status(400).send(e.message);
   }
@@ -105,11 +153,13 @@ app.get("/getTT", async (req, res) => {
 app.get("/getTT/teacher", async (req, res) => {
   try {
     let day = req.query.day;
+    const date = new Date();
+    let today =
+      date.getDate() + "" + (date.getMonth() + 1) + "" + date.getFullYear();
     const data = await TT.find({ day: day });
-
     data.map((val) => {
       val.Timetable.map(async (val) => {
-        if (val.updatedDay < req.query.date) {
+        if (val.updatedDay < today) {
           const update = await TT.updateOne(
             { day: day, "Timetable._id": val._id },
             {
@@ -118,11 +168,44 @@ app.get("/getTT/teacher", async (req, res) => {
               },
             }
           );
-          // val.status = "nottaken";
         }
-        console.log(val);
       });
     });
+
+    data.map((val) => {
+      val.TempTT.map(async (val) => {
+        if (val.date < today) {
+          const update = await TT.updateOne(
+            { day: day, "Timetable.time": val.time },
+            {
+              $set: {
+                [`Timetable.$.teacher`]: val.teacher,
+                [`Timetable.$.subject`]: val.subject,
+                [`Timetable.$.room`]: val.room,
+              },
+            }
+          );
+        }
+      });
+    });
+    // console.log(data.TempTT);
+    data.map((val) => {
+      // console.log(val);
+      val.TempTT.map(async (val) => {
+        if (val.date < today) {
+          // console.log(val.time);
+          const update = await TT.updateOne(
+            { day: day, "TempTT.time": val.time },
+            {
+              $pull: {
+                TempTT: { time: val.time },
+              },
+            }
+          );
+        }
+      });
+    });
+
     res.status(200).send(data);
   } catch (e) {
     return res.status(400).send(e.message);
@@ -134,7 +217,9 @@ app.get("/getstudents", async (req, res) => {
     const clas = req.query.class;
     const year = req.query.year;
     const div = req.query.div;
-    const data = await students.find({ clas, year, div });
+    const data = await students
+      .find({ Class: clas, year, div })
+      .sort({ Roll_no: 1 });
     res.send({ status: "ok", data });
   } catch (err) {
     return res.status(500).send(e.message);
@@ -165,13 +250,13 @@ app.post("/postAttendence", async (req, res) => {
     Subject,
     StudentData,
   });
-  console.log(updatedDay);
+  await data.save();
   const day = req.query.day;
   const find = await TT.findOne({ day, Class: clas, div, year });
   // res.send(find);
   if (find) {
     const update = await TT.updateOne(
-      { day: "monday", Class: clas, Div, Year, "Timetable._id": id },
+      { day, Class: clas, div, year, "Timetable._id": id },
       {
         $set: {
           "Timetable.$.status": "taken",
@@ -180,14 +265,13 @@ app.post("/postAttendence", async (req, res) => {
       }
     );
     if (update) {
-      // data.save();
       // res.send(data);
-      res.send("done");
+      res.status(201).json(data);
     } else {
-      res.send("error");
+      res.status(400).send("error");
     }
   } else {
-    res.send("data not found");
+    res.status(400).send("data not found");
   }
 });
 
@@ -195,6 +279,7 @@ app.post("/signin/teacher", async (req, res) => {
   try {
     let token;
     const { UID, email, password } = req.body;
+    console.log("UID", UID, "email ", email, "password", password);
     if (!UID || !email || !password) {
       res.status(400).send("pls fill the data");
     }
@@ -202,18 +287,20 @@ app.post("/signin/teacher", async (req, res) => {
     if (userdata) {
       const verifypass = await bcrypt.compare(password, userdata.password);
       if (verifypass) {
-        // token = await userdata.generateAuthToken();
-        // console.log(token);
-        res.status(200).json(userdata);
+        token = await userdata.generateAuthToken();
+        if (jwt.verify(token, process.env.SECRET_KEY)) {
+          return res.status(200).json(userdata);
+        } else {
+          res.status(400).send("invalid Token");
+        }
       } else {
-        res.status(400).json("invalid credentials");
+        return res.status(400).json({ message: "invalid credentials" });
       }
     } else {
-      console.log("data not found");
-      res.status(400).json("data not found");
+      return res.status(400).json({ message: "data not found" });
     }
   } catch (error) {
-    res.status(400).json(error.message);
+    return res.status(400).json({ message: error.message });
   }
 });
 
@@ -228,29 +315,258 @@ app.post("/signin/student", async (req, res) => {
     if (data) {
       const verifypass = await bcrypt.compare(password, data.password);
       if (verifypass) {
-        // token = await data.generateAuthToken();
-        // console.log(token);
-        res.status(200).json(data);
+        token = await data.generateAuthToken();
+        if (jwt.verify(token, process.env.SECRET_KEY)) {
+          return res.status(200).json(data);
+        } else {
+          res.status(400).send("invalid Token");
+        }
       } else {
-        res.status(400).json({ message: "invalid credentials" });
+        return res.status(400).json({ message: "invalid credentials" });
       }
     } else {
-      console.log("data not found");
-      res.status(400).send("data not found");
+      return res.status(400).json({ message: "data not found" });
     }
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error.message);
+    console.log(error.message);
+    // return res.status(400).json({ message: error.message });
   }
 });
 
-app.patch("/getTT", async (req, res) => {
+app.post("/deletestudent", async (req, res) => {
   try {
-    const id = req.query.id;
+    const Id_no = req.query.Id_no;
+    const deletedata = await students.deleteOne({ Id_no: Id_no });
+    if (deletedata) {
+      return res.status(200).json({ message: "Student Deleted Successfully" });
+    } else {
+      return res.status(400).json({ message: "Student does not exists" });
+    }
   } catch (error) {
-    res.send(error.message);
+    res.status(400).send({ message: error.message });
   }
 });
+
+app.post("/updatestudent", async (req, res) => {
+  try {
+    const Id_no = req.query.Id_no;
+    const update = await students.updateOne(
+      { Id_no: Id_no },
+      {
+        $set: req.body,
+      }
+    );
+    if (update.modifiedCount > 0) {
+      console.log(update);
+      return res
+        .status(200)
+        .json({ message: "Student Data Updated Successfully" });
+    } else {
+      return res.json({ message: "Student Does not exists" });
+    }
+  } catch (e) {
+    return res.status(400).json({ message: e.message });
+  }
+});
+
+app.post("/editProfile", async (req, res) => {
+  try {
+    let data;
+    const { Id_no, type } = req.query;
+    if (type === "student") {
+      data = await students.updateOne(
+        { Id_no: Id_no },
+        {
+          $set: req.body,
+        }
+      );
+    } else if (type === "teacher") {
+      data = await Teachers.updateOne(
+        { UID: Id_no },
+        {
+          $set: req.body,
+        }
+      );
+    } else {
+      return res.status(400).send({ message: "data not found" });
+    }
+    if (data) {
+      return res
+        .status(200)
+        .json({ message: "updated successfully", data: req.body });
+    } else {
+      return res
+        .status(400)
+        .json({ message: "cannot update data please try again" });
+    }
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+app.post("/updateProfilePic", async (req, res) => {
+  try {
+    let data;
+    const { Id_no, type } = req.query;
+    if (type === "student") {
+      const find = await students.findOne({ Id_no });
+      if (find) {
+        if (find.cloudinary) {
+          const delet = await cld.uploader.destroy(find.cloudinary);
+        }
+        {
+          data = await students.updateOne(
+            { Id_no: Id_no },
+            {
+              $set: req.body,
+            }
+          );
+          return res.status(200).json({
+            message: " Kindly Relogin to see the updates",
+            data: req.body,
+          });
+        }
+      } else {
+        return res
+          .status(400)
+          .json({ message: "some error occured kindly try again" });
+      }
+    } else if (type === "teacher") {
+      const find = await Teachers.findOne({ UID: Id_no });
+      if (find) {
+        const delet = await cld.uploader.destroy(find.cloudinary);
+        {
+          data = await Teachers.updateOne(
+            { UID: Id_no },
+            {
+              $set: req.body,
+            }
+          );
+          return res.status(200).json({
+            message: " Kindly Relogin to see the updates",
+            data: req.body,
+          });
+        }
+      }
+    } else {
+      return res.status(400).send({ message: "data not found" });
+    }
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+app.post("/postnotice", async (req, res) => {
+  try {
+    let today = new Date();
+    let date = `${today.getDate()}-${
+      today.getMonth() + 1
+    }-${today.getFullYear()}`;
+    let Time = `${today.getHours()}:${today.getMinutes()}`;
+    const { notice } = req.body;
+    const data = new Notice({
+      notice,
+      date,
+      Time,
+    });
+    if (!notice) {
+      return res
+        .status(400)
+        .json({ message: "Kindly Enter Some Text In The TextBox" });
+    }
+    const save = await data.save();
+    if (save) {
+      return res.status(200).json({ message: "Notice Send Successfully 👍" });
+    } else {
+      return res
+        .status(400)
+        .json({ message: "Cannot Send Message Now Kindly Try Again" });
+    }
+  } catch (e) {
+    return res.status(400).json({ message: e.message });
+  }
+});
+
+app.get("/getnotice", async (req, res) => {
+  try {
+    const data = await Notice.find({});
+    if (data) {
+      return res.status(200).json({
+        data,
+      });
+    }
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+app.delete("/deleteNotice", async (req, res) => {
+  try {
+    const id = req.body.id.id;
+    const data = await Notice.findByIdAndDelete({ _id: id });
+    if (data) {
+      res.status(200).json({ message: "message deleted successfully" });
+    } else {
+      res.status(400).json({ message: "error in deleting message" });
+    }
+  } catch (e) {
+    console.log(e.message);
+    res.status(400).json({ message: e.message });
+  }
+});
+
+app.post("/updateTT", async (req, res) => {
+  var time = req.body.currentdata.time;
+  var field = req.body.field;
+  var fieldData = req.body.fieldData;
+  const currentdata = req.body.currentdata;
+  const find = await TT.find({ _id: req.body.data._id });
+  find[0].Timetable.map(async (val) => {
+    if (val.time == time) {
+      await TT.updateOne(
+        { _id: req.body.data._id },
+        {
+          $push: {
+            TempTT: {
+              time: currentdata.time,
+              teacher: currentdata.teacher,
+              subject: currentdata.subject,
+              room: currentdata.room,
+              date: req.body.date,
+            },
+          },
+        }
+      );
+      await TT.updateOne(
+        { _id: req.body.data._id, "Timetable._id": currentdata._id },
+        {
+          $set: {
+            [`Timetable.$.${field}`]: fieldData,
+          },
+        }
+      );
+      res.status(200).send({ message: "updated successfully" });
+    }
+  });
+});
+
+// ---------------------- DEPLOYMENT --------------
+
+const __dirname1 = path.resolve();
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname1, "/frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname1, "frontend", "dist", "index.html"));
+  });
+} else {
+  app.get("", (req, res) => {
+    console.log("error");
+    res.send("hello world");
+  });
+}
+
+// ---------------------- DEPLOYMENT --------------
 
 app.listen(PORT, () => {
   console.log(`the server is running at port no ${PORT}`);

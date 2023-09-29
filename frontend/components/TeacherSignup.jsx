@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormControl, FormLabel, Button } from "@chakra-ui/react";
 import { VStack } from "@chakra-ui/layout";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { useToast } from "@chakra-ui/react";
-// import axios from 'axios';
-// import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const TeacherSignup = () => {
   const [show, setshow] = useState(false);
   const [pic, setpic] = useState();
+  const [cld, setcld] = useState("");
 
   const [user, setuser] = useState({
     UID: "",
@@ -20,7 +19,6 @@ const TeacherSignup = () => {
 
   const [loading, setloading] = useState(false);
   const Toast = useToast();
-  //   const history = useHistory()
 
   let name, value;
   const change = (e) => {
@@ -28,7 +26,7 @@ const TeacherSignup = () => {
     value = e.target.value;
     setuser({ ...user, [name]: value });
   };
-
+  // console.log(pic);
   const handleClick = () => setshow(!show);
   const postDetails = (pic) => {
     setloading(true);
@@ -51,7 +49,7 @@ const TeacherSignup = () => {
       data.append("file", pic);
       data.append("upload_preset", "chat-app");
       data.append("cloud_name", "priyam3801h");
-      fetch("https://api.cloudinary.com/v1_1/priyam3801h/image/upload", {
+      fetch("https://api.cloudinary.com/v1_1/priyam3801h/image/upload/", {
         method: "post",
         body: data,
       })
@@ -60,6 +58,7 @@ const TeacherSignup = () => {
         })
         .then((data) => {
           setpic(data.url.toString());
+          setcld(data.public_id.toString());
           setloading(false);
         })
         .catch((e) => {
@@ -80,49 +79,30 @@ const TeacherSignup = () => {
   };
   const submitHandler = async (e) => {
     e.preventDefault();
-    // const {name,email,password,confirmpassword} = user;
+    const { UID, name, email, password, confirmpassword } = user;
     setloading(true);
-    // if(!name||!email||!password||!confirmpassword){
-    //   Toast({
-    //     title:"please fill all fields",
-    //     status:"warning",
-    //     duration:5000,
-    //     isClosable:true,
-    //     position:'top'
-    //   })
-    //   setloading(false)
-    //   return;
-    // }
-    // if(password!==confirmpassword){
-    //   Toast({
-    //     title:"passwords are not matching",
-    //     status:"warning",
-    //     duration:5000,
-    //     isClosable:true,
-    //     position:'top'
-    //   })
-    //   setloading(false)
-    //   return;
-    // }
-
-    const { UID, name, email, password } = user;
     const res = await fetch("/teachers", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        UID: UID,
-        name: name,
-        email: email,
-        password: password,
+        UID,
+        name,
+        email,
+        password,
+        profilePic: pic,
+        confirmpassword,
+        cloudinary: cld,
       }),
     });
     const data = await res.json();
-    if (!data) {
+    // console.log(data);
+    // return;
+    if (!data || res.status === 400) {
       Toast({
         title: "Error occured",
-        description: "not submitted",
+        description: data.message,
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -140,10 +120,6 @@ const TeacherSignup = () => {
       });
       setloading(false);
     }
-
-    // localStorage.setItem("userInfo",JSON.stringify(data))
-
-    // history.push("/chats")
   };
 
   return (
@@ -210,10 +186,16 @@ const TeacherSignup = () => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
-      {/* <FormControl id="pic">
-              <FormLabel>Upload your picture</FormLabel>
-              <Input type='file' p={1.5} accept='image/*' onChange={(e)=>postDetails(e.target.files[0])} name='profilePic'/>
-            </FormControl> */}
+      <FormControl id="pic">
+        <FormLabel>Upload your picture</FormLabel>
+        <Input
+          type="file"
+          p={1.5}
+          accept="image/*"
+          onChange={(e) => postDetails(e.target.files[0])}
+          name="profilePic"
+        />
+      </FormControl>
       <Button
         colorScheme="green"
         width="100%"

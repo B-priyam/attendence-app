@@ -25,50 +25,6 @@ const Studentlogin = () => {
   };
   const handleClick = () => setshow(!show);
 
-  // const postDetails =(pic)=>{
-  //   setloading(true);
-  //   if(pic === undefined)
-  //   {
-  //     Toast({
-  //       title:"please select an image",
-  //       status:"warning",
-  //       duration:5000,
-  //       isClosable:true,
-  //       position:'top'
-  //     })
-  //     return ;
-  //   }
-  //   if(pic.type==="image/jpg"||pic.type==="image/png"||pic.type==="image/jpeg"){
-  //     const data = new FormData()
-  //     data.append("file",pic);
-  //     data.append("upload_preset","chat-app")
-  //     data.append("cloud_name","priyam3801h")
-  //     fetch("https://api.cloudinary.com/v1_1/priyam3801h/image/upload",{
-  //       method:"post",
-  //       body:data,
-  //     }).then((res)=>{
-  //       return res.json()
-  //     }).then((data)=>{
-  //       setpic(data.url.toString());
-  //       setloading(false);
-  //     }).catch((e)=>{
-  //       console.log('error', e.message)
-  //       setloading(false)
-  //     })
-  //   }
-  //   else{
-  //     Toast({
-  //       title:"please select an image",
-  //       status:"warning",
-  //       duration:5000,
-  //       isClosable:true,
-  //       position:'top'
-  //     })
-  //     setloading(false)
-  //     return;
-  //   }
-  // }
-
   const submitHandler = async () => {
     setloading(true);
     if (!user.email || !user.password || !user.Id_no) {
@@ -91,24 +47,25 @@ const Studentlogin = () => {
       body: JSON.stringify({ Id_no, email, password }),
     });
     const data = await res.json();
-    if (res.status !== 400 && data) {
+    if (res.status === 400 || !data) {
       Toast({
-        title: "login successfull",
+        title: "OOPS...  An error Occured",
+        description: data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    } else {
+      Toast({
+        title: "Congratulations",
+        description: data.message,
         status: "success",
         duration: 5000,
         isClosable: true,
         position: "top",
       });
       navigate("/mainpage", { state: { data: data } });
-    } else {
-      Toast({
-        title: "invalid credentials",
-        description: res.body,
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });
     }
     setloading(false);
   };

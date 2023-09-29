@@ -18,6 +18,15 @@ const TTSchema = mongoose.Schema({
       updatedDay: String,
     },
   ],
+  TempTT: [
+    {
+      time: String,
+      teacher: String,
+      subject: String,
+      room: String,
+      date: String,
+    },
+  ],
   div: {
     type: String,
   },

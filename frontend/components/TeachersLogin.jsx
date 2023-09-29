@@ -42,24 +42,26 @@ const TeachersLogin = () => {
       }),
     });
     const data = await res.json();
-    if (res.status !== 400 && data) {
+    if (res.status === 400 || !data) {
       Toast({
-        title: "login successfull",
+        title: "OOPS !!",
+        description: data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    } else {
+      Toast({
+        title: "Congratulations",
+        description: data.message,
         status: "success",
         duration: 5000,
         isClosable: true,
         position: "top",
       });
       navigate("/mainpage", { state: { data: data } });
-    } else {
-      Toast({
-        title: "invalid credentials",
-        description: res.body,
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });
+      localStorage.setItem("user", data.name);
     }
     setloading(false);
   };
