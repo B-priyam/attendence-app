@@ -74,7 +74,6 @@ app.post("/students", async (req, res) => {
       return res.status(201).json({ data: "Student added successfully" });
     })
     .catch((e) => {
-      console.log(e.message);
       return res.status(400).json({ message: e.message });
     });
 });
@@ -143,7 +142,6 @@ app.get("/getTT", async (req, res) => {
       year: year,
       div: div,
     });
-    // console.log(data);
     res.status(200).json(data);
   } catch (e) {
     return res.status(400).send(e.message);
@@ -188,12 +186,9 @@ app.get("/getTT/teacher", async (req, res) => {
         }
       });
     });
-    // console.log(data.TempTT);
     data.map((val) => {
-      // console.log(val);
       val.TempTT.map(async (val) => {
         if (val.date < today) {
-          // console.log(val.time);
           const update = await TT.updateOne(
             { day: day, "TempTT.time": val.time },
             {
@@ -279,7 +274,6 @@ app.post("/signin/teacher", async (req, res) => {
   try {
     let token;
     const { UID, email, password } = req.body;
-    console.log("UID", UID, "email ", email, "password", password);
     if (!UID || !email || !password) {
       res.status(400).send("pls fill the data");
     }
@@ -328,8 +322,7 @@ app.post("/signin/student", async (req, res) => {
       return res.status(400).json({ message: "data not found" });
     }
   } catch (error) {
-    console.log(error.message);
-    // return res.status(400).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 });
 
@@ -357,7 +350,6 @@ app.post("/updatestudent", async (req, res) => {
       }
     );
     if (update.modifiedCount > 0) {
-      console.log(update);
       return res
         .status(200)
         .json({ message: "Student Data Updated Successfully" });
@@ -510,7 +502,6 @@ app.delete("/deleteNotice", async (req, res) => {
       res.status(400).json({ message: "error in deleting message" });
     }
   } catch (e) {
-    console.log(e.message);
     res.status(400).json({ message: e.message });
   }
 });

@@ -26,7 +26,6 @@ const TeacherSignup = () => {
     value = e.target.value;
     setuser({ ...user, [name]: value });
   };
-  // console.log(pic);
   const handleClick = () => setshow(!show);
   const postDetails = (pic) => {
     setloading(true);
@@ -97,8 +96,6 @@ const TeacherSignup = () => {
       }),
     });
     const data = await res.json();
-    // console.log(data);
-    // return;
     if (!data || res.status === 400) {
       Toast({
         title: "Error occured",
@@ -110,7 +107,6 @@ const TeacherSignup = () => {
       });
       setloading(false);
     } else {
-      console.log(data);
       Toast({
         title: "registration successfull",
         status: "success",

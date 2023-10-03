@@ -13,7 +13,6 @@ import Noticepage from "./Noticepage";
 import Takeattendence from "./Takeattendence";
 
 const Attendencepage = (props) => {
-  // console.log(props);
   const [users, setusers] = useState([]);
 
   // console.log(window.innerWidth);
@@ -60,7 +59,7 @@ const Attendencepage = (props) => {
       const data = await res.json();
       const val = data.flatMap((item) => {
         return item.Timetable.filter((val) => {
-          if (val.teacher === props.data.name) {
+          if (val.teacher === props.data.name.split(" ")[0]) {
             val.class = item.Class;
             val.div = item.div;
             val.year = item.year;

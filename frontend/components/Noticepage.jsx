@@ -147,7 +147,15 @@ const Noticepage = () => {
               .map((val) => {
                 return (
                   <div key={val._id}>
-                    <li style={{ fontWeight: "500", fontSize: "20px" }}>
+                    <li
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "20px",
+                        width: "70vw",
+                        textAlign: "center",
+                        marginLeft: "20px",
+                      }}
+                    >
                       {val.notice}
                       <div
                         style={{
@@ -164,9 +172,9 @@ const Noticepage = () => {
                         <DeleteIcon
                           color={"red"}
                           float={"right"}
-                          fontSize={"25px"}
+                          fontSize={{ base: "25px", lg: "30px" }}
                           mt={"-60px"}
-                          mr={"10px"}
+                          mr={{ base: "2px", lg: "20px" }}
                           cursor={"pointer"}
                           onClick={() => {
                             deleteNotice({ id: val._id });
