@@ -25,6 +25,10 @@ cld.config({
   api_secret: "_f_ogbGIp6mJoRbVybr3JTdpknE",
 });
 
+app.get("", (req, res) => {
+  res.send("hello");
+});
+
 app.post("/students", async (req, res) => {
   const {
     name,
