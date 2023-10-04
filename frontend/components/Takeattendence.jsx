@@ -93,9 +93,9 @@ const Takeattendence = (props) => {
         isClosable: true,
         position: "top",
       });
-      setloading(false);
       window.location.reload(false);
     }
+    setloading(false);
   };
   const changeColor = (color, index) => {
     // console.log(event.target);
