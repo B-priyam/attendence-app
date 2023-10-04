@@ -5,9 +5,10 @@
   "main": "app.js",
   "type": "commonjs",
   "scripts": {
-    "start":"nodemon backend/server/app.js",
+    "start":"node backend/server/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "vite build"
+    "build":"npm install && install --prefix frontend && npm run build --prefix frontend"
+
   },
   "keywords": [],
   "author": "",
