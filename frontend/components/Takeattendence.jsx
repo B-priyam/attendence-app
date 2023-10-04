@@ -73,9 +73,23 @@ const Takeattendence = (props) => {
     const data2 = await res.json();
     // console.log(data2);
     if (!data2) {
-      alert("An Error Occurred...");
+      Toast({
+        title: "error",
+        description: "could not take attendence please try again",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
     } else {
-      alert("Attendence taken successfully");
+      Toast({
+        title: "success",
+        description: "Attendence Taken Successfully",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
       window.location.reload(false);
     }
   };

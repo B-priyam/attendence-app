@@ -156,7 +156,7 @@ const AddStudents = () => {
     }
   };
   return (
-    <VStack spacing="5px" color="black" onSubmit={reset()}>
+    <VStack spacing="5px" color="black">
       <FormControl id="ID_no" isRequired>
         <FormLabel>Id no</FormLabel>
         <NumberInput
