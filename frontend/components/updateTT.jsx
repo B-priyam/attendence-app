@@ -161,7 +161,7 @@ const UpdateTT = () => {
           top={170}
           colorScheme="green"
           width="max-content"
-          marginTop="20px"
+          marginTop="30px"
           onClick={() => {
             submitHandler, setstatus(true);
           }}

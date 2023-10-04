@@ -278,7 +278,11 @@ const Profile = () => {
               className="profilePic"
               marginTop={{ base: "-90px", md: "0", lg: "0" }}
             >
-              <img className="image" src={location.state.data.profilePic} />
+              <img
+                className="image"
+                src={location.state.data.profilePic}
+                style={{ objectFit: "cover" }}
+              />
             </Box>
             <Box display={"flex"} alignItems={"center"}>
               <button
