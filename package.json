@@ -5,9 +5,9 @@
   "main": "app.js",
   "type": "commonjs",
   "scripts": {
-    "start":"node backend/server/app.js",
+    "start": "node backend/server/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build":"npm install && npm install --prefix frontend && npm run build --prefix frontend"
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "keywords": [],
   "author": "",
@@ -23,5 +23,8 @@
     "node-localstorage": "^3.0.5",
     "nodemon": "^3.0.1",
     "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "vite": "^4.4.10"
   }
 }
