@@ -30,7 +30,7 @@ const TeachersLogin = () => {
       setloading(false);
       return;
     }
-    const res = await fetch("http://localhost:5000/signin/teacher", {
+    const res = await fetch("http://localhost:10000/signin/teacher", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

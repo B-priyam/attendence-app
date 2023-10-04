@@ -101,7 +101,6 @@ const MainPage = () => {
               cursor={"pointer"}
             />
           </Box>
-          <Text color={"white"}>{() => data}</Text>
         </Box>
         <Container
           display="flex"
@@ -110,8 +109,6 @@ const MainPage = () => {
           height="max-content"
           background="white"
           boxShadow="5px 5px 10px gray"
-          // minHeight="70vh"
-          // height={"max-content"}
           gap={{ base: "0px", lg: "5vw" }}
           border="1px solid rgba(0,0,0,0.1)"
           borderRadius="10px"
