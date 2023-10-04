@@ -111,7 +111,7 @@ const Profile = () => {
   };
   const deletepic = async () => {
     const res = await fetch(
-      `/updateProfilePic?type=${type}&Id_no=${
+      `http://localhost:5000/updateProfilePic?type=${type}&Id_no=${
         type == "student" ? location.state.data.Id_no : UID
       }`,
       {
@@ -150,12 +150,15 @@ const Profile = () => {
 
   const deleteStudent = async (e) => {
     e.preventDefault();
-    const res = await fetch(`/deletestudent?Id_no=${Id_no}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `http://localhost:5000/deletestudent?Id_no=${Id_no}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const data = await res.json();
     if (!data || res.status === 400) {
       Toast({
@@ -180,15 +183,18 @@ const Profile = () => {
   };
   const updateStudent = async (e) => {
     e.preventDefault();
-    const res = await fetch(`/updatestudent?Id_no=${Id_no}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        [value]: valuedata,
-      }),
-    });
+    const res = await fetch(
+      `http://localhost:5000/updatestudent?Id_no=${Id_no}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          [value]: valuedata,
+        }),
+      }
+    );
     const data = await res.json();
     if (!data || res.status === 400) {
       Toast({
@@ -214,7 +220,7 @@ const Profile = () => {
   const editProfile = async (e) => {
     e.preventDefault();
     const res = await fetch(
-      `/editProfile?type=${type}&Id_no=${
+      `http://localhost:5000/editProfile?type=${type}&Id_no=${
         type == "student" ? location.state.data.Id_no : UID
       }`,
       {

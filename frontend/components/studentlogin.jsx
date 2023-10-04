@@ -39,7 +39,7 @@ const Studentlogin = () => {
       return;
     }
     const { Id_no, email, password } = user;
-    const res = await fetch("/signin/student", {
+    const res = await fetch("http://localhost:5000/signin/student", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

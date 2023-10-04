@@ -106,7 +106,7 @@ const AddStudents = () => {
       password,
       confirmpassword,
     } = user;
-    const res = await fetch("/students", {
+    const res = await fetch("http://localhost:5000/students", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -33,7 +33,7 @@ const Attendencepage = (props) => {
   const showdata = async () => {
     if (props.data.type === "student") {
       const res = await fetch(
-        `/getTT?day=${currentDay.toLowerCase()}&Class=${
+        `http://localhost:5000/getTT?day=${currentDay.toLowerCase()}&Class=${
           props.data.Class
         }&year=${props.data.year}&div=${props.data.div}`,
         {
@@ -48,7 +48,7 @@ const Attendencepage = (props) => {
       setusers(data.Timetable);
     } else {
       const res = await fetch(
-        `/getTT/teacher?day=${currentDay.toLowerCase()}`,
+        `http://localhost:5000/getTT/teacher?day=${currentDay.toLowerCase()}`,
         {
           method: "GET",
           headers: {

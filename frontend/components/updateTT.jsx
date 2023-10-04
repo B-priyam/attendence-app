@@ -60,9 +60,9 @@ const UpdateTT = () => {
 
   const submitHandler = async () => {
     const res = await fetch(
-      `/getTT?day=${currentDay.toLowerCase()}&Class=${user.clas}&year=${
-        user.year
-      }&div=${user.div}`,
+      `http://localhost:5000/getTT?day=${currentDay.toLowerCase()}&Class=${
+        user.clas
+      }&year=${user.year}&div=${user.div}`,
       {
         method: "GET",
         headers: {
@@ -76,7 +76,7 @@ const UpdateTT = () => {
   };
 
   const updateTimetable = async (value) => {
-    const res = await fetch("/updateTT", {
+    const res = await fetch("http://localhost:5000/updateTT", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

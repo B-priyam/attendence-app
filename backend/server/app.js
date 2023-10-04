@@ -1,9 +1,9 @@
 const express = require("express");
 require("./conn.js");
 const app = express();
-const dotenv = require("dotenv");
-dotenv.config({ path: "../.env" });
-const PORT = process.env.PORT || 5000;
+const dotenv = require("dotenv").config();
+
+const PORT = process.env.PORT;
 const students = require("../models/studentmodal.js");
 const Teachers = require("../models/teachermodal.js");
 const TT = require("../models/Timetablemodal.js");
@@ -14,8 +14,10 @@ const mongoose = require("mongoose");
 const cld = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
 const path = require("path");
+const cors = require("cors");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
 
 cld.config({
   cloud_name: "priyam3801h",
@@ -556,6 +558,8 @@ if (process.env.NODE_ENV === "production") {
     res.send("hello world");
   });
 }
+
+//"build":"npm install && install --prefix frontend && npm run build --prefix frontend"
 
 // ---------------------- DEPLOYMENT --------------
 

@@ -80,7 +80,7 @@ const TeacherSignup = () => {
     e.preventDefault();
     const { UID, name, email, password, confirmpassword } = user;
     setloading(true);
-    const res = await fetch("/teachers", {
+    const res = await fetch("http://localhost:5000/teachers", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

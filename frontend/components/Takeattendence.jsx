@@ -28,7 +28,7 @@ const Takeattendence = (props) => {
     date.getDate() + "" + (date.getMonth() + 1) + "" + date.getFullYear();
   const showdata = async () => {
     const res = await fetch(
-      `/getstudents?class=${props.class}&year=${props.year}&div=${props.div}`,
+      `http://localhost:5000/getstudents?class=${props.class}&year=${props.year}&div=${props.div}`,
       {
         method: "GET",
         headers: {
@@ -48,25 +48,28 @@ const Takeattendence = (props) => {
     setdata([...data, { name, rollno: roll_no, attendenceStatus: Attendence }]);
   };
   const submitHandler = async () => {
-    const res = await fetch(`/postAttendence?day=${props.day}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        clas: students[0].Class,
-        Div: students[0].div,
-        Year: students[0].year,
-        Time: props.time,
-        Teacher: props.teacher,
-        Subject: props.subject,
-        StudentData: uniquedata,
-        id: props.id,
-        year: props.year,
-        div: props.div,
-        updatedDay: day,
-      }),
-    });
+    const res = await fetch(
+      `http://localhost:5000/postAttendence?day=${props.day}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          clas: students[0].Class,
+          Div: students[0].div,
+          Year: students[0].year,
+          Time: props.time,
+          Teacher: props.teacher,
+          Subject: props.subject,
+          StudentData: uniquedata,
+          id: props.id,
+          year: props.year,
+          div: props.div,
+          updatedDay: day,
+        }),
+      }
+    );
     const data2 = await res.json();
     // console.log(data2);
     if (!data2) {

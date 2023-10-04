@@ -11,7 +11,7 @@ const Noticepage = () => {
   const Toast = useToast();
   const location = useLocation();
   const onAdd = async () => {
-    const res = await fetch("/postnotice", {
+    const res = await fetch("http://localhost:5000/postnotice", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -44,7 +44,7 @@ const Noticepage = () => {
   };
 
   const data = async () => {
-    const res = await fetch("/getnotice", {
+    const res = await fetch("http://localhost:5000/getnotice", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const Noticepage = () => {
   };
 
   const deleteNotice = async (id) => {
-    const res = await fetch("/deleteNotice", {
+    const res = await fetch("http://localhost:5000/deleteNotice", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
