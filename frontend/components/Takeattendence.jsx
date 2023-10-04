@@ -10,6 +10,7 @@ import {
   List,
   UnorderedList,
   ListItem,
+  Button,
 } from "@chakra-ui/react";
 import "/css/takeattendence.css";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 const Takeattendence = (props) => {
   const [students, setstudents] = useState([]);
   const [data, setdata] = useState([]);
+  const [loading, setloading] = useState(false);
 
   const uniquedata = data.filter(
     (val, index, self) =>
@@ -48,6 +50,7 @@ const Takeattendence = (props) => {
     setdata([...data, { name, rollno: roll_no, attendenceStatus: Attendence }]);
   };
   const submitHandler = async () => {
+    setloading(true);
     const res = await fetch(
       `https://attendence-app-nbtf.onrender.com/postAttendence?day=${props.day}`,
       {
@@ -90,6 +93,7 @@ const Takeattendence = (props) => {
         isClosable: true,
         position: "top",
       });
+      setloading(false);
       window.location.reload(false);
     }
   };
@@ -233,7 +237,7 @@ const Takeattendence = (props) => {
       </div>
       {uniquedata.length == students.length ? (
         <div style={{ display: "flex" }}>
-          <button
+          <Button
             style={{
               background: "green",
               padding: "10px",
@@ -245,9 +249,10 @@ const Takeattendence = (props) => {
               fontSize: "20px",
             }}
             onClick={submitHandler}
+            isLoading={loading}
           >
             Submit
-          </button>
+          </Button>
         </div>
       ) : (
         ""
