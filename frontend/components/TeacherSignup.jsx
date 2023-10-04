@@ -20,6 +20,11 @@ const TeacherSignup = () => {
   const [loading, setloading] = useState(false);
   const Toast = useToast();
 
+  const capitalize = (str) => {
+    const lower = str.toLowerCase();
+    return `${lower[0].toUpperCase()}${lower.slice(1)}`;
+  };
+
   let name, value;
   const change = (e) => {
     name = e.target.name;
@@ -89,7 +94,7 @@ const TeacherSignup = () => {
         },
         body: JSON.stringify({
           UID,
-          name,
+          name: capitalize(name),
           email,
           password,
           profilePic: pic,

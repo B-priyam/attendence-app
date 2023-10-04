@@ -15,7 +15,6 @@ import Takeattendence from "./Takeattendence";
 const Attendencepage = (props) => {
   const [users, setusers] = useState([]);
 
-  // console.log(window.innerWidth);
   const days = [
     "monday",
     "monday",
@@ -48,7 +47,7 @@ const Attendencepage = (props) => {
       setusers(data.Timetable);
     } else {
       const res = await fetch(
-        `https://attendence-app-nbtf.onrender.com/teacher?day=${currentDay.toLowerCase()}`,
+        `https://attendence-app-nbtf.onrender.com/getTT/teacher?day=${currentDay.toLowerCase()}`,
         {
           method: "GET",
           headers: {

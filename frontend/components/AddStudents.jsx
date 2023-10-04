@@ -27,6 +27,11 @@ const AddStudents = () => {
     confirmpassword: "",
   });
 
+  const capitalize = (str) => {
+    const lower = str.toLowerCase();
+    return `${lower[0].toUpperCase()}${lower.slice(1)}`;
+  };
+
   const change = (e) => {
     const { name, value } = e.target;
     setuser({ ...user, [name]: value });
@@ -114,7 +119,7 @@ const AddStudents = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name,
+          name: capitalize(name),
           Roll_no,
           Id_no,
           clas,

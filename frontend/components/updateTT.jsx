@@ -161,7 +161,7 @@ const UpdateTT = () => {
           top={170}
           colorScheme="green"
           width="max-content"
-          style={{ marginTop: 15 }}
+          marginTop="20px"
           onClick={() => {
             submitHandler, setstatus(true);
           }}
@@ -190,6 +190,7 @@ const UpdateTT = () => {
             bgColor={"white"}
             borderRadius={"10px"}
             boxShadow={"1px 1px 10px grey"}
+            marginBottom={"10px"}
           >
             <Box>
               <Table>
