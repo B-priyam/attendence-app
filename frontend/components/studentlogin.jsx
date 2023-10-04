@@ -39,13 +39,16 @@ const Studentlogin = () => {
       return;
     }
     const { Id_no, email, password } = user;
-    const res = await fetch("http://localhost:5000/signin/student", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ Id_no, email, password }),
-    });
+    const res = await fetch(
+      "https://attendence-app-nbtf.onrender.com/signin/student",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ Id_no, email, password }),
+      }
+    );
     const data = await res.json();
     if (res.status === 400 || !data) {
       Toast({
