@@ -60,7 +60,7 @@ const UpdateTT = () => {
 
   const submitHandler = async () => {
     const res = await fetch(
-      `http://localhost:5000/getTT?day=${currentDay.toLowerCase()}&Class=${
+      `https://attendence-app-nbtf.onrender.com/getTT?day=${currentDay.toLowerCase()}&Class=${
         user.clas
       }&year=${user.year}&div=${user.div}`,
       {
@@ -76,19 +76,22 @@ const UpdateTT = () => {
   };
 
   const updateTimetable = async (value) => {
-    const res = await fetch("http://localhost:5000/updateTT", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        data: data,
-        currentdata,
-        field,
-        fieldData,
-        date: today,
-      }),
-    });
+    const res = await fetch(
+      "https://attendence-app-nbtf.onrender.com/updateTT",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: data,
+          currentdata,
+          field,
+          fieldData,
+          date: today,
+        }),
+      }
+    );
     const data2 = await res.json();
     if (res.status === 200) {
       setloading(true);

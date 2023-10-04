@@ -80,21 +80,24 @@ const TeacherSignup = () => {
     e.preventDefault();
     const { UID, name, email, password, confirmpassword } = user;
     setloading(true);
-    const res = await fetch("http://localhost:5000/teachers", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        UID,
-        name,
-        email,
-        password,
-        profilePic: pic,
-        confirmpassword,
-        cloudinary: cld,
-      }),
-    });
+    const res = await fetch(
+      "https://attendence-app-nbtf.onrender.com/teachers",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          UID,
+          name,
+          email,
+          password,
+          profilePic: pic,
+          confirmpassword,
+          cloudinary: cld,
+        }),
+      }
+    );
     const data = await res.json();
     if (!data || res.status === 400) {
       Toast({

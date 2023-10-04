@@ -106,25 +106,28 @@ const AddStudents = () => {
       password,
       confirmpassword,
     } = user;
-    const res = await fetch("http://localhost:5000/students", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        Roll_no,
-        Id_no,
-        clas,
-        div,
-        year,
-        email,
-        password,
-        profilePic: pic,
-        confirmpassword,
-        cloudinary: cld,
-      }),
-    });
+    const res = await fetch(
+      "https://attendence-app-nbtf.onrender.com/students",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          Roll_no,
+          Id_no,
+          clas,
+          div,
+          year,
+          email,
+          password,
+          profilePic: pic,
+          confirmpassword,
+          cloudinary: cld,
+        }),
+      }
+    );
     const data = await res.json();
     if (!data || res.status === 400) {
       Toast({

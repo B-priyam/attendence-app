@@ -11,15 +11,18 @@ const Noticepage = () => {
   const Toast = useToast();
   const location = useLocation();
   const onAdd = async () => {
-    const res = await fetch("http://localhost:5000/postnotice", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        notice: value,
-      }),
-    });
+    const res = await fetch(
+      "https://attendence-app-nbtf.onrender.com/postnotice",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          notice: value,
+        }),
+      }
+    );
     const data = await res.json();
     if (res.status === 400 || !data) {
       Toast({
@@ -44,26 +47,32 @@ const Noticepage = () => {
   };
 
   const data = async () => {
-    const res = await fetch("http://localhost:5000/getnotice", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      "https://attendence-app-nbtf.onrender.com/getnotice",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const data = await res.json();
     setnotices(data.data);
   };
 
   const deleteNotice = async (id) => {
-    const res = await fetch("http://localhost:5000/deleteNotice", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id,
-      }),
-    });
+    const res = await fetch(
+      "https://attendence-app-nbtf.onrender.com/deleteNotice",
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+        }),
+      }
+    );
     const data = await res.json();
     if (!data || res.status === 400) {
       Toast({

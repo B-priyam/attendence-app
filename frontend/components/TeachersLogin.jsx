@@ -30,17 +30,20 @@ const TeachersLogin = () => {
       setloading(false);
       return;
     }
-    const res = await fetch("http://localhost:5000/signin/teacher", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        UID,
-        email,
-        password,
-      }),
-    });
+    const res = await fetch(
+      "https://attendence-app-nbtf.onrender.com/signin/teacher",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          UID,
+          email,
+          password,
+        }),
+      }
+    );
     const data = await res.json();
     if (res.status === 400 || !data) {
       Toast({
@@ -71,6 +74,7 @@ const TeachersLogin = () => {
       <FormControl id="UID" isRequired>
         <FormLabel>UID</FormLabel>
         <Input
+          type="number"
           placeholder="Enter your UID"
           onChange={(e) => setUID(e.target.value)}
         ></Input>

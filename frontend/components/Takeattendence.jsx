@@ -28,7 +28,7 @@ const Takeattendence = (props) => {
     date.getDate() + "" + (date.getMonth() + 1) + "" + date.getFullYear();
   const showdata = async () => {
     const res = await fetch(
-      `http://localhost:5000/getstudents?class=${props.class}&year=${props.year}&div=${props.div}`,
+      `https://attendence-app-nbtf.onrender.com/getstudents?class=${props.class}&year=${props.year}&div=${props.div}`,
       {
         method: "GET",
         headers: {
@@ -49,7 +49,7 @@ const Takeattendence = (props) => {
   };
   const submitHandler = async () => {
     const res = await fetch(
-      `http://localhost:5000/postAttendence?day=${props.day}`,
+      `https://attendence-app-nbtf.onrender.com/postAttendence?day=${props.day}`,
       {
         method: "POST",
         headers: {

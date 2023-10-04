@@ -52,7 +52,7 @@ const MainPage = () => {
       <Box style={{ overflow: "hidden" }}>
         <Box
           width={"100vw"}
-          bg={"red"}
+          bg={"#FF8C00"}
           height={"10vh"}
           display={"flex"}
           justifyContent={"space-between"}
