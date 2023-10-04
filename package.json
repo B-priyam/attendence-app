@@ -5,9 +5,9 @@
   "main": "app.js",
   "type": "commonjs",
   "scripts": {
-    "start":"node server/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-
+    "start":"node backend/server/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build":"npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "keywords": [],
   "author": "",
