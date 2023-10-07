@@ -22,7 +22,7 @@ const CheckInternet = () => {
   useEffect(() => {
     onOpen();
     close();
-  });
+  }, []);
   return (
     <div>
       <Box>

@@ -6,6 +6,12 @@ import { useLocation } from "react-router-dom";
 import CheckInternet from "./checkInternet";
 
 const Noticepage = () => {
+  const date = new Date();
+  let hrs = date.getHours();
+  if (hrs > 12) {
+    date.setHours(hrs % 12);
+  }
+  let min = date.getMinutes();
   const [value, setvalue] = useState("");
   const [notices, setnotices] = useState([]);
   const Toast = useToast();
@@ -19,6 +25,7 @@ const Noticepage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          time: date.getHours() + ":" + min,
           notice: value,
         }),
       }

@@ -461,18 +461,19 @@ app.post("/postnotice", async (req, res) => {
     let date = `${today.getDate()}-${
       today.getMonth() + 1
     }-${today.getFullYear()}`;
-    let Time = `${today.getHours()}:${today.getMinutes()}`;
-    const { notice } = req.body;
+    const { notice, time } = req.body;
+    console.log(time);
     const data = new Notice({
       notice,
       date,
-      Time,
+      Time: time,
     });
     if (!notice) {
       return res
         .status(400)
         .json({ message: "Kindly Enter Some Text In The TextBox" });
     }
+    console.log(time);
     const save = await data.save();
     if (save) {
       return res.status(200).json({ message: "Notice Send Successfully 👍" });

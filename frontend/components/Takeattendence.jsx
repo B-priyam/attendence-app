@@ -11,6 +11,7 @@ import {
   UnorderedList,
   ListItem,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import "/css/takeattendence.css";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,7 @@ const Takeattendence = (props) => {
   const [students, setstudents] = useState([]);
   const [data, setdata] = useState([]);
   const [loading, setloading] = useState(false);
+  const Toast = useToast();
 
   const uniquedata = data.filter(
     (val, index, self) =>
