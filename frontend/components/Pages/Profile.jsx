@@ -32,6 +32,8 @@ import {
   MenuList,
   MenuItem,
   Divider,
+  Avatar,
+  Img,
 } from "@chakra-ui/react";
 import AddStudents from "../AddStudents";
 import UpdateTT from "../updateTT";
@@ -277,11 +279,16 @@ const Profile = () => {
             <Box
               className="profilePic"
               marginTop={{ base: "-90px", md: "0", lg: "0" }}
+              fontSize={"100px"}
             >
-              <img
+              <Avatar
+                height={"100%"}
+                width={"100%"}
                 className="image"
-                src={location.state.data.profilePic}
-                style={{ objectFit: "cover" }}
+                // src={location.state.data.profilePic}
+                name={location.state.data.name}
+                fontSize={"100px"}
+                objectFit={"cover"}
               />
             </Box>
             <Box display={"flex"} alignItems={"center"}>

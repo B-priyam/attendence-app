@@ -161,10 +161,12 @@ app.get("/getTT/teacher", async (req, res) => {
     let today =
       date.getDate() + "" + (date.getMonth() + 1) + "" + date.getFullYear();
     const data = await TT.find({ day: day });
+    // res.send(data);
+    console.log(today);
     data.map((val) => {
       val.Timetable.map(async (val) => {
         if (val.updatedDay < today) {
-          // console.log(val.updatedDay, today);
+          res.send(val.updatedDay, today);
           const update = await TT.updateOne(
             { day: day, "Timetable._id": val._id },
             {
@@ -287,7 +289,8 @@ app.post("/signin/teacher", async (req, res) => {
     const userdata = await Teachers.findOne({ UID: UID });
     if (userdata) {
       const verifypass = await bcrypt.compare(password, userdata.password);
-      if (verifypass) {
+      if (verifypass && userdata.email === email) {
+        console.log(userdata.email);
         token = await userdata.generateAuthToken();
         if (jwt.verify(token, process.env.SECRET_KEY)) {
           return res.status(200).json(userdata);
@@ -315,7 +318,7 @@ app.post("/signin/student", async (req, res) => {
     const data = await students.findOne({ Id_no: Id_no });
     if (data) {
       const verifypass = await bcrypt.compare(password, data.password);
-      if (verifypass) {
+      if (verifypass && data.email === email) {
         token = await data.generateAuthToken();
         if (jwt.verify(token, process.env.SECRET_KEY)) {
           return res.status(200).json(data);
