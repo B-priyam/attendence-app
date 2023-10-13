@@ -31,7 +31,7 @@ const TeachersLogin = () => {
       return;
     }
     const res = await fetch(
-      "https://attendence-apps.onrender.com/signin/teacher",
+      "https://attendence-app-nbtf.onrender.com/signin/teacher",
       {
         method: "POST",
         headers: {
