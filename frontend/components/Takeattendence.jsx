@@ -12,6 +12,12 @@ import {
   ListItem,
   Button,
   useToast,
+  Input,
+  Radio,
+  ButtonGroup,
+  RadioGroup,
+  Stack,
+  Avatar,
 } from "@chakra-ui/react";
 import "/css/takeattendence.css";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +33,7 @@ const Takeattendence = (props) => {
       self.findLastIndex((val2) => val2.rollno === val.rollno) === index
   );
 
+  // console.log(uniquedata);
   let date = new Date();
   let day =
     date.getDate() + "" + (date.getMonth() + 1) + "" + date.getFullYear();
@@ -100,7 +107,6 @@ const Takeattendence = (props) => {
     setloading(false);
   };
   const changeColor = (color, index) => {
-    // console.log(event.target);
     document.getElementsByClassName("buttons")[index].style.background =
       "white";
 
@@ -161,14 +167,16 @@ const Takeattendence = (props) => {
                 >
                   <b>{val.Roll_no}</b>
                 </Text>
-                <Image
+                <Avatar
                   borderRadius="full"
                   width={{ base: "60%" }}
                   margin={"auto"}
                   boxSize="130px"
-                  // ml={"1.1rem"}
-                  src={val.profilePic}
-                  alt="Dan Abramov"
+                  size={"100%"}
+                  fontSize={"80"}
+                  objectFit={"cover"}
+                  // src={val.profilePic}
+                  name={val.name}
                 />
 
                 <Text
@@ -179,14 +187,81 @@ const Takeattendence = (props) => {
                 >
                   <b>{val.name}</b>
                 </Text>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    bottom: "0",
-                  }}
-                >
+
+                {
                   <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <RadioGroup
+                      display={"flex"}
+                      justifyContent={"center"}
+                      gap={"7px"}
+                    >
+                      <Radio
+                        bg={"white"}
+                        style={{
+                          height: "40px",
+                          width: "40px",
+                          padding: "18px",
+                        }}
+                        value="A"
+                        name="btn"
+                        colorScheme="green"
+                        onChange={() => {
+                          Attendence({
+                            name: val.name,
+                            roll_no: val.Roll_no,
+                            Attendence: "Present",
+                          });
+                        }}
+                      >
+                        <span style={{ marginLeft: "-34px" }}>P</span>
+                      </Radio>
+                      <Radio
+                        bg={"white"}
+                        style={{
+                          height: "40px",
+                          width: "40px",
+                          padding: "18px",
+                        }}
+                        value="P"
+                        colorScheme="red"
+                        onChange={() => {
+                          Attendence({
+                            name: val.name,
+                            roll_no: val.Roll_no,
+                            Attendence: "Absent",
+                          });
+                        }}
+                      >
+                        <span style={{ marginLeft: "-34px" }}>A</span>
+                      </Radio>
+                      <Radio
+                        bg={"white"}
+                        style={{
+                          height: "40px",
+                          width: "40px",
+                          padding: "18px",
+                        }}
+                        value="L"
+                        colorScheme="yellow"
+                        onChange={() => {
+                          Attendence({
+                            name: val.name,
+                            roll_no: val.Roll_no,
+                            Attendence: "Late",
+                          });
+                        }}
+                      >
+                        <span style={{ marginLeft: "-34px" }}>L</span>
+                      </Radio>
+                    </RadioGroup>
+
+                    {/* </div> */}
+                    {/* <div
                     className="buttons button-red"
                     value="A"
                     id="red"
@@ -230,8 +305,9 @@ const Takeattendence = (props) => {
                     }}
                   >
                     L
+                  </div> */}
                   </div>
-                </div>
+                }
               </Box>
             </div>
           );

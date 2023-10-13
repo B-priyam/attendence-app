@@ -285,10 +285,12 @@ const Profile = () => {
                 height={"100%"}
                 width={"100%"}
                 className="image"
-                // src={location.state.data.profilePic}
+                src={location.state.data.profilePic}
                 name={location.state.data.name}
                 fontSize={"100px"}
                 objectFit={"cover"}
+                style={{ fontSize: "larger" }}
+                size={"100%"}
               />
             </Box>
             <Box display={"flex"} alignItems={"center"}>
