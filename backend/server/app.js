@@ -25,10 +25,6 @@ cld.config({
   api_secret: "_f_ogbGIp6mJoRbVybr3JTdpknE",
 });
 
-// app.get("", (req, res) => {
-//   res.send("hello");
-// });
-
 app.post("/students", async (req, res) => {
   const {
     name,
@@ -161,12 +157,9 @@ app.get("/getTT/teacher", async (req, res) => {
     let today =
       date.getDate() + "" + (date.getMonth() + 1) + "" + date.getFullYear();
     const data = await TT.find({ day: day });
-    // res.send(data);
-    console.log(today);
     data.map((val) => {
       val.Timetable.map(async (val) => {
-        if (val.updatedDay < today) {
-          res.send(val.updatedDay, today);
+        if (Number(val.updatedDay) > Number(today)) {
           const update = await TT.updateOne(
             { day: day, "Timetable._id": val._id },
             {
@@ -181,7 +174,7 @@ app.get("/getTT/teacher", async (req, res) => {
 
     data.map((val) => {
       val.TempTT.map(async (val) => {
-        if (val.date < today) {
+        if (Number(val.date) < Number(today)) {
           const update = await TT.updateOne(
             { day: day, "Timetable.time": val.time },
             {
@@ -197,7 +190,7 @@ app.get("/getTT/teacher", async (req, res) => {
     });
     data.map((val) => {
       val.TempTT.map(async (val) => {
-        if (val.date < today) {
+        if (Number(val.date) < Number(today)) {
           const update = await TT.updateOne(
             { day: day, "TempTT.time": val.time },
             {
@@ -290,7 +283,6 @@ app.post("/signin/teacher", async (req, res) => {
     if (userdata) {
       const verifypass = await bcrypt.compare(password, userdata.password);
       if (verifypass && userdata.email === email) {
-        console.log(userdata.email);
         token = await userdata.generateAuthToken();
         if (jwt.verify(token, process.env.SECRET_KEY)) {
           return res.status(200).json(userdata);
