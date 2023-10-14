@@ -159,7 +159,7 @@ app.get("/getTT/teacher", async (req, res) => {
     const data = await TT.find({ day: day });
     data.map((val) => {
       val.Timetable.map(async (val) => {
-        if (Number(val.updatedDay) > Number(today)) {
+        if (Number(val.updatedDay) < Number(today)) {
           const update = await TT.updateOne(
             { day: day, "Timetable._id": val._id },
             {
