@@ -153,7 +153,7 @@ const Takeattendence = (props) => {
                 justifyContent="center"
                 p={3}
                 bg={"#0E2954"}
-                maxWidth={{ base: "160px", lg: "max-content" }}
+                maxWidth={{ base: "160px", lg: "210px" }}
                 minW={{ lg: "200px" }}
                 m="40px 0px 15px 0px"
                 borderRadius="10px"
