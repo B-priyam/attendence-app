@@ -149,7 +149,7 @@ const Takeattendence = (props) => {
             <div key={index}>
               <Box
                 d="flex"
-                alignItems={"center"}
+                alignItems="center"
                 justifyContent="center"
                 p={3}
                 bg={"#0E2954"}
@@ -168,6 +168,7 @@ const Takeattendence = (props) => {
                   <b>{val.Roll_no}</b>
                 </Text>
                 <Avatar
+                  marginLeft={{ lg: "20px" }}
                   borderRadius="full"
                   width={{ base: "60%" }}
                   margin={"auto"}
@@ -175,7 +176,7 @@ const Takeattendence = (props) => {
                   size={"100%"}
                   fontSize={"80"}
                   objectFit={"cover"}
-                  // src={val.profilePic}
+                  src={val.profilePic}
                   name={val.name}
                 />
 
