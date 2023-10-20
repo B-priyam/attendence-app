@@ -4,7 +4,7 @@ const date = new Date();
 const AttendenceSchema = mongoose.Schema({
   Date: {
     type: String,
-    default: new Date(),
+    default: new Date().toISOString(),
   },
   Class: {
     type: String,

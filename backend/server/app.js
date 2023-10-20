@@ -247,7 +247,67 @@ app.post("/postAttendence", async (req, res) => {
     Subject,
     StudentData,
   });
-  await data.save();
+
+  // console.log(req.body.date);
+  // const d = await Attendence.find();
+  // const d = await Attendence.find({
+  //   $and: [
+  //     { Date: { $gte: new Date("2023-09-21"). } },
+  //     { Date: { $lte: new Date("2023-09-27").toISOString() } },
+  //   ],
+  // });
+  // const d = await Attendence.find({
+  //   Date: { $gt: new Date("2023-09-22T00:00:00.000Z") },
+  // });
+
+  // let total = 0;
+  // let present = 0;
+  // let totallec = 0;
+  // let totalPresentlec = 0;
+
+  // console.log(d.Date.toTimeStamps());
+  // let da = new Date(d.Date);
+  // da.setDate(d.Date);
+
+  // console.log(d);
+
+  // d.map(async (val) => {
+  //   console.log(val.Date);
+  // let first = val.Date.split("(")[1];
+  // let second = first.split(")")[0];
+  // console.log(second);
+  // let main = first.split(")");
+  // console.log(main[0]);
+  // console.log(new Date(val.Date).toISOString());
+
+  // const update = await Attendence.updateOne(
+  //   { Date: val.Date },
+  //   {
+  //     $set: {
+  //       Date: `ISODate("${second}")`,
+  //     },
+  //   }
+  // );
+
+  // if (update) {
+  //   console.log("congo");
+  // } else {
+  //   console.log("nhi hau");
+  // }
+
+  // console.log(val);
+  // val.StudentData.map((val) => {
+  //   if (val.name === "updated just") {
+  //     total++;
+  //   }
+  //   if (val.name === "updated just" && val.attendenceStatus === "Present") {
+  //     present++;
+  //   }
+  // });
+  // });
+  // console.log(total, present);
+  // console.log("attendence = ", (present / total) * 100, "%");
+
   const day = req.query.day;
   const find = await TT.findOne({ day, Class: clas, div, year });
   // res.send(find);
@@ -262,13 +322,13 @@ app.post("/postAttendence", async (req, res) => {
       }
     );
     if (update) {
-      // res.send(data);
+      await data.save();
       res.status(201).json(data);
     } else {
-      res.status(400).send("error");
+      res.status(400).json({ message: "error" });
     }
   } else {
-    res.status(400).send("data not found");
+    res.status(400).json({ message: "data not found" });
   }
 });
 

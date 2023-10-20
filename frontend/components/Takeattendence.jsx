@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Image,
   Text,
-  Container,
-  background,
-  Td,
-  Tr,
   List,
   UnorderedList,
   ListItem,
@@ -14,9 +9,7 @@ import {
   useToast,
   Input,
   Radio,
-  ButtonGroup,
   RadioGroup,
-  Stack,
   Avatar,
 } from "@chakra-ui/react";
 import "/css/takeattendence.css";
@@ -260,53 +253,6 @@ const Takeattendence = (props) => {
                         <span style={{ marginLeft: "-34px" }}>L</span>
                       </Radio>
                     </RadioGroup>
-
-                    {/* </div> */}
-                    {/* <div
-                    className="buttons button-red"
-                    value="A"
-                    id="red"
-                    onClick={() => {
-                      Attendence({
-                        name: val.name,
-                        roll_no: val.Roll_no,
-                        Attendence: "Absent",
-                      });
-                      changeColor("red", index);
-                    }}
-                  >
-                    A
-                  </div>
-                  <div
-                    className="button-green buttons"
-                    value="P"
-                    id="green"
-                    onClick={() => {
-                      Attendence({
-                        name: val.name,
-                        roll_no: val.Roll_no,
-                        Attendence: "Present",
-                      });
-                      changeColor("green", index);
-                    }}
-                  >
-                    P
-                  </div>
-                  <div
-                    className="button-yellow buttons"
-                    value="L"
-                    id="yellow"
-                    onClick={() => {
-                      Attendence({
-                        name: val.name,
-                        roll_no: val.Roll_no,
-                        Attendence: "Late",
-                      });
-                      changeColor("yellow", index);
-                    }}
-                  >
-                    L
-                  </div> */}
                   </div>
                 }
               </Box>
