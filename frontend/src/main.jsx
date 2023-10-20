@@ -10,8 +10,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ChakraProvider>
       <CookiesProvider>
-        {/* <App /> */}
-        <Attendence />
+        <App />
+        {/* <Attendence /> */}
       </CookiesProvider>
     </ChakraProvider>
   </React.StrictMode>
