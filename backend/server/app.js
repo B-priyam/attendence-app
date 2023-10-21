@@ -263,13 +263,13 @@ app.post("/postAttendence", async (req, res) => {
       }
     );
     if (update) {
-      // await data.save();
-      // res.status(201).json(data);
+      await data.save();
+      res.status(201).json(data);
     } else {
-      // res.status(400).json({ message: "error" });
+      res.status(400).json({ message: "error" });
     }
   } else {
-    // res.status(400).json({ message: "data not found" });
+    res.status(400).json({ message: "data not found" });
   }
 });
 
