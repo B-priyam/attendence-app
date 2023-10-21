@@ -15,6 +15,7 @@ const cld = require("cloudinary").v2;
 const jwt = require("jsonwebtoken");
 const path = require("path");
 const cors = require("cors");
+const { start } = require("repl");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
@@ -248,66 +249,6 @@ app.post("/postAttendence", async (req, res) => {
     StudentData,
   });
 
-  // console.log(req.body.date);
-  // const d = await Attendence.find();
-  // const d = await Attendence.find({
-  //   $and: [
-  //     { Date: { $gte: new Date("2023-09-21"). } },
-  //     { Date: { $lte: new Date("2023-09-27").toISOString() } },
-  //   ],
-  // });
-  // const d = await Attendence.find({
-  //   Date: { $gt: new Date("2023-09-22T00:00:00.000Z") },
-  // });
-
-  // let total = 0;
-  // let present = 0;
-  // let totallec = 0;
-  // let totalPresentlec = 0;
-
-  // console.log(d.Date.toTimeStamps());
-  // let da = new Date(d.Date);
-  // da.setDate(d.Date);
-
-  // console.log(d);
-
-  // d.map(async (val) => {
-  //   console.log(val.Date);
-  // let first = val.Date.split("(")[1];
-  // let second = first.split(")")[0];
-  // console.log(second);
-  // let main = first.split(")");
-  // console.log(main[0]);
-  // console.log(new Date(val.Date).toISOString());
-
-  // const update = await Attendence.updateOne(
-  //   { Date: val.Date },
-  //   {
-  //     $set: {
-  //       Date: `ISODate("${second}")`,
-  //     },
-  //   }
-  // );
-
-  // if (update) {
-  //   console.log("congo");
-  // } else {
-  //   console.log("nhi hau");
-  // }
-
-  // console.log(val);
-  // val.StudentData.map((val) => {
-  //   if (val.name === "updated just") {
-  //     total++;
-  //   }
-  //   if (val.name === "updated just" && val.attendenceStatus === "Present") {
-  //     present++;
-  //   }
-  // });
-  // });
-  // console.log(total, present);
-  // console.log("attendence = ", (present / total) * 100, "%");
-
   const day = req.query.day;
   const find = await TT.findOne({ day, Class: clas, div, year });
   // res.send(find);
@@ -322,13 +263,13 @@ app.post("/postAttendence", async (req, res) => {
       }
     );
     if (update) {
-      await data.save();
-      res.status(201).json(data);
+      // await data.save();
+      // res.status(201).json(data);
     } else {
-      res.status(400).json({ message: "error" });
+      // res.status(400).json({ message: "error" });
     }
   } else {
-    res.status(400).json({ message: "data not found" });
+    // res.status(400).json({ message: "data not found" });
   }
 });
 
@@ -602,6 +543,63 @@ app.post("/updateTT", async (req, res) => {
       res.status(200).send({ message: "updated successfully" });
     }
   });
+});
+
+app.post("/attendence", async (req, res) => {
+  const { name } = req.body;
+  let start = new Date(req.body.start);
+  let end = new Date(req.body.end);
+  end.setDate(Number(req.body.end.split("-")[2]) + 1);
+
+  const d = await Attendence.find({
+    Date: {
+      $gte: start.getTime(),
+      $lte: end.getTime(),
+    },
+  });
+  let total = 0;
+  let present = 0;
+
+  let subjects = [];
+  let subjectpresent = [];
+
+  d.map(async (val1) => {
+    const timestamp = val1.Date;
+    const date = new Date(timestamp * 1);
+    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+
+    // console.log(formattedDate);
+    val1.StudentData.map((val) => {
+      if (val.name === name) {
+        total++;
+      }
+      if (val.name === name && val.attendenceStatus === "Present") {
+        present++;
+      }
+      if (val.name === name && !(val1.Subject in subjects)) {
+        subjects.push(val1.Subject);
+        if (val.attendenceStatus === "Present") {
+          subjectpresent.push(val1.Subject);
+        }
+      }
+    });
+  });
+  scounts = {};
+  spcounts = {};
+  subjects.forEach((x) => {
+    scounts[x] = (scounts[x] || 0) + 1;
+  });
+  subjectpresent.forEach((x) => {
+    spcounts[x] = (spcounts[x] || 0) + 1;
+  });
+  const s = Math.round((present / total) * 100);
+  let particular = {};
+  subjects.forEach((x) => {
+    particular[`${x}`] = Math.round((spcounts[x] / scounts[x]) * 100);
+  });
+  res.json({ message: s, p: particular });
 });
 
 // ---------------------- DEPLOYMENT --------------

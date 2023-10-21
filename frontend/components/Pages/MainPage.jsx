@@ -20,6 +20,7 @@ import Profile from "./Profile";
 import { Cookies, useCookies } from "react-cookie";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import CheckInternet from "../checkInternet";
+import Attendence from "../Attendence";
 
 const MainPage = () => {
   const [value, setvalue] = useState([]);
@@ -43,8 +44,10 @@ const MainPage = () => {
       return <Attendencepage data={location.state.data} />;
     } else if (page === "notice") {
       return <Noticepage />;
-    } else {
+    } else if (page === "profile") {
       return <Profile />;
+    } else {
+      return <Attendence />;
     }
   };
   return (
@@ -72,12 +75,20 @@ const MainPage = () => {
               <MenuList fontSize={"15px"}>
                 <MenuItem onClick={() => setpage("home")}>Home</MenuItem>
                 <MenuItem onClick={() => setpage("notice")}>Notice</MenuItem>
+                <MenuItem
+                  onClick={() => setpage("attendence")}
+                  display={
+                    location.state.data.type === "teacher" ? "none" : "inline"
+                  }
+                >
+                  Attendence
+                </MenuItem>
               </MenuList>
             </Menu>
           </Box>
           <Box
             display={{ base: "none", md: "inline", lg: "inline" }}
-            width={"20%"}
+            width={"30%"}
             fontSize={"24px"}
           >
             <List display={"flex"} justifyContent={"space-between"}>
@@ -86,6 +97,15 @@ const MainPage = () => {
               </ListItem>
               <ListItem onClick={() => setpage("notice")} cursor={"pointer"}>
                 Notice
+              </ListItem>
+              <ListItem
+                onClick={() => setpage("attendence")}
+                cursor={"pointer"}
+                display={
+                  location.state.data.type === "teacher" ? "none" : "inline"
+                }
+              >
+                Attendence
               </ListItem>
             </List>
           </Box>
