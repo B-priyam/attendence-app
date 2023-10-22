@@ -6,6 +6,7 @@ import {
   Container,
   Divider,
   Flex,
+  Heading,
   Input,
   Text,
 } from "@chakra-ui/react";
@@ -20,15 +21,18 @@ const Attendence = () => {
   const [att, setatt] = useState([]);
   const [particuler, setparticular] = useState([]);
   const location = useLocation();
-  //   console.log(date);
 
   let date = new Date();
+  let tdate = date.getDate();
+  let ydate = date.getDate() - 1;
   let month = date.getMonth() + 1;
-  let st = `01-${month < 10 ? "0" + month : month}-${date.getFullYear()}`;
-  let lt = `${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}-${
-    month < 10 ? "0" + month : month
+  let st = `${month < 10 ? "0" + month : month}-01-${date.getFullYear()}`;
+  let lt = `${month < 10 ? "0" + month : month}-${
+    tdate < 10 ? "0" + tdate : tdate
   }-${date.getFullYear()}`;
-
+  let Yesterday = `${month < 10 ? "0" + month : month}-${
+    ydate < 10 ? "0" + ydate : ydate
+  }-${date.getFullYear()}`;
   const SubmitHandler = async (start, end) => {
     const res = await fetch(
       "https://attendence-app-nbtf.onrender.com/attendence",
@@ -48,7 +52,7 @@ const Attendence = () => {
     if (!data) {
       console.log("🥲");
     } else {
-      console.log(data);
+      //   console.log(data);
       if (data.message > 0) {
         setallover(data.message);
       } else {
@@ -65,7 +69,11 @@ const Attendence = () => {
 
   return (
     <>
-      <Box width={"100%"} height={"max-content"}>
+      <Box
+        width={"100%"}
+        height={"max-content"}
+        mb={{ base: "50px", md: "0px", lg: "0px" }}
+      >
         <Text textAlign={"center"} fontSize={"48px"}>
           THIS MONTH ATTENDENCE
         </Text>
@@ -99,8 +107,14 @@ const Attendence = () => {
             flexDirection={"column"}
           >
             <Divider display={{ base: "inline", md: "none", lg: "none" }} />
-            <Divider />
-            <Text textAlign={"center"} fontSize={"150%"} mt={{ base: "5vh" }}>
+            <Divider display={{ base: "inline", md: "none", lg: "none" }} />
+
+            <Text
+              textAlign={"center"}
+              fontSize={"150%"}
+              mt={{ base: "5vh", md: "0px", lg: "0px" }}
+              display={att.length > 0 ? "inline" : "none"}
+            >
               Attendence According To Subject
             </Text>
             <Box
@@ -136,15 +150,51 @@ const Attendence = () => {
           </Box>
         </Box>
       </Box>
-
+      <Divider display={{ base: "inline", md: "none", lg: "none" }} />
+      <Divider />
+      <Heading
+        as="h4"
+        textAlign={"center"}
+        mt={{ base: "50px", md: "10px", lg: "10px" }}
+        width={"100%"}
+      >
+        Particular Attendance Details
+      </Heading>
+      <Box
+        width={"100%"}
+        display={"flex"}
+        gap={"10px"}
+        justifyContent={"space-between"}
+        margin={{ base: "30px 0px", md: "-20px", lg: "-20px" }}
+      >
+        <Button onClick={() => SubmitHandler(lt, lt)} colorScheme="orange">
+          Today's Attendence
+        </Button>
+        <Button
+          onClick={() => SubmitHandler(Yesterday, Yesterday)}
+          colorScheme="orange"
+        >
+          Yesterday's Attendence
+        </Button>
+      </Box>
       <Text display={{ base: "inline", lg: "none" }}>From</Text>
-      <Text display={{ base: "inline", lg: "none" }}>To</Text>
-      <Box display={"flex"} width={"100%"}>
+      <Text
+        display={{ base: "inline", lg: "none" }}
+        position={"relative"}
+        left={"150"}
+      >
+        To
+      </Text>
+      <Box
+        display={"flex"}
+        width={"100%"}
+        mt={{ base: "0px", md: "-20px", lg: "-30px" }}
+      >
         <Input
           type="date"
           min="2023-09-02"
           onChange={(e) => setstartdate(e.target.value)}
-          placeholder="From"
+          placeholder={"From"}
         />
         <Input
           type="date"
@@ -156,10 +206,11 @@ const Attendence = () => {
         <Button
           onClick={() => SubmitHandler(startdate, enddate)}
           display={"block"}
-          width={"30%"}
-          bg={"orange.400"}
+          //   width={"30%"}
+          colorScheme="orange"
+          m={"10px"}
         >
-          Submit
+          Attendence By Range
         </Button>
       </Box>
     </>

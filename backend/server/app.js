@@ -259,10 +259,20 @@ app.post("/postAttendence", async (req, res) => {
         $set: {
           "Timetable.$.status": "taken",
           "Timetable.$.updatedDay": updatedDay,
+          "Timetable.$.status": "taken",
         },
       }
     );
-    if (update) {
+    // const update2 = await TT.updateOne(
+    //   { day, Class: clas, div, year, "Timetable._id": id },
+    //   {
+    //     $set: {
+    //       "Timetable.$.status": "taken",
+    //       "Timetable.$.updatedDay": updatedDay,
+    //     },
+    //   }
+    // );
+    if (update2) {
       await data.save();
       res.status(201).json(data);
     } else {
@@ -547,8 +557,8 @@ app.post("/updateTT", async (req, res) => {
 
 app.post("/attendence", async (req, res) => {
   const { name } = req.body;
-  let start = new Date(req.body.start);
   let end = new Date(req.body.end);
+  let start = new Date(req.body.start);
   end.setDate(Number(req.body.end.split("-")[2]) + 1);
 
   const d = await Attendence.find({
@@ -575,12 +585,18 @@ app.post("/attendence", async (req, res) => {
       if (val.name === name) {
         total++;
       }
-      if (val.name === name && val.attendenceStatus === "Present") {
+      if (
+        val.name === name &&
+        (val.attendenceStatus === "Present" || val.attendenceStatus === "Late")
+      ) {
         present++;
       }
       if (val.name === name && !(val1.Subject in subjects)) {
         subjects.push(val1.Subject);
-        if (val.attendenceStatus === "Present") {
+        if (
+          val.attendenceStatus === "Present" ||
+          val.attendenceStatus === "Late"
+        ) {
           subjectpresent.push(val1.Subject);
         }
       }
@@ -594,6 +610,9 @@ app.post("/attendence", async (req, res) => {
   subjectpresent.forEach((x) => {
     spcounts[x] = (spcounts[x] || 0) + 1;
   });
+
+  // console.log(d);
+
   const s = Math.round((present / total) * 100);
   let particular = {};
   subjects.forEach((x) => {
