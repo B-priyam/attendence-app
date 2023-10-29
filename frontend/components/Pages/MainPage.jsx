@@ -21,6 +21,7 @@ import { Cookies, useCookies } from "react-cookie";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import CheckInternet from "../checkInternet";
 import Attendence from "../Attendence";
+import TeacherAttendence from "../TeacherAttendence";
 
 const MainPage = () => {
   const [value, setvalue] = useState([]);
@@ -47,7 +48,11 @@ const MainPage = () => {
     } else if (page === "profile") {
       return <Profile />;
     } else {
-      return <Attendence />;
+      if (location.state.data.type === "student") {
+        return <Attendence name={location.state.data.name} />;
+      } else {
+        return <TeacherAttendence name={location.state.data.name} />;
+      }
     }
   };
   return (
@@ -75,12 +80,7 @@ const MainPage = () => {
               <MenuList fontSize={"15px"}>
                 <MenuItem onClick={() => setpage("home")}>Home</MenuItem>
                 <MenuItem onClick={() => setpage("notice")}>Notice</MenuItem>
-                <MenuItem
-                  onClick={() => setpage("attendence")}
-                  display={
-                    location.state.data.type === "teacher" ? "none" : "inline"
-                  }
-                >
+                <MenuItem onClick={() => setpage("attendence")}>
                   Attendence
                 </MenuItem>
               </MenuList>
@@ -101,16 +101,20 @@ const MainPage = () => {
               <ListItem
                 onClick={() => setpage("attendence")}
                 cursor={"pointer"}
-                display={
-                  location.state.data.type === "teacher" ? "none" : "inline"
-                }
               >
                 Attendence
               </ListItem>
             </List>
           </Box>
           <Box fontSize={{ base: "18px", md: "25px", lg: "32px" }}>
-            <Text>Attendence App</Text>
+            <Text
+              color={"white"}
+              textTransform={"uppercase"}
+              fontWeight={"700"}
+              cursor={"default"}
+            >
+              Attendence App
+            </Text>
           </Box>
           <Box>
             <Avatar

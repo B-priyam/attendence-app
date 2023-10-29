@@ -6,6 +6,10 @@ const AttendenceSchema = mongoose.Schema({
     type: String,
     default: date.getTime(),
   },
+  localDate: {
+    type: String,
+    default: date.toDateString(),
+  },
   Class: {
     type: String,
   },

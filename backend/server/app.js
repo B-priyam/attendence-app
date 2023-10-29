@@ -263,16 +263,7 @@ app.post("/postAttendence", async (req, res) => {
         },
       }
     );
-    // const update2 = await TT.updateOne(
-    //   { day, Class: clas, div, year, "Timetable._id": id },
-    //   {
-    //     $set: {
-    //       "Timetable.$.status": "taken",
-    //       "Timetable.$.updatedDay": updatedDay,
-    //     },
-    //   }
-    // );
-    if (update2) {
+    if (update) {
       await data.save();
       res.status(201).json(data);
     } else {
@@ -555,6 +546,9 @@ app.post("/updateTT", async (req, res) => {
   });
 });
 
+let a = new Date();
+// console.log(a.toDateString());
+
 app.post("/attendence", async (req, res) => {
   const { name } = req.body;
   let end = new Date(req.body.end);
@@ -576,11 +570,12 @@ app.post("/attendence", async (req, res) => {
   d.map(async (val1) => {
     const timestamp = val1.Date;
     const date = new Date(timestamp * 1);
-    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+    const formattedDate = `${date.getDate().toString().padStart(2, "0")}-${(
+      date.getMonth() + 1
+    )
       .toString()
-      .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+      .padStart(2, "0")}-${date.getFullYear()}`;
 
-    // console.log(formattedDate);
     val1.StudentData.map((val) => {
       if (val.name === name) {
         total++;
@@ -602,6 +597,7 @@ app.post("/attendence", async (req, res) => {
       }
     });
   });
+
   scounts = {};
   spcounts = {};
   subjects.forEach((x) => {
@@ -619,6 +615,117 @@ app.post("/attendence", async (req, res) => {
     particular[`${x}`] = Math.round((spcounts[x] / scounts[x]) * 100);
   });
   res.json({ message: s, p: particular });
+});
+
+app.post("/attendence/teacher", async (req, res) => {
+  const { clas, div, year } = req.body.user;
+  const { st, lt } = req.body;
+
+  const start = new Date(st);
+
+  const end = new Date(lt);
+  const get = await Attendence.find({
+    Class: clas,
+    Div: div,
+    Year: year,
+    Date: {
+      $gte: start.getTime(),
+      $lte: end.getTime(),
+    },
+  });
+  let subjects = [];
+  get.map((val) => {
+    if (val.Subject in subjects) {
+    } else {
+      subjects.push(val.Subject);
+    }
+  });
+  const subject = subjects.filter((v, i, self) => {
+    return i == self.indexOf(v);
+  });
+
+  let temp;
+  let arr = [];
+
+  subject.map((val) => {
+    temp = [];
+    get.map((val1) => {
+      if (val1.Subject === val) {
+        val1.StudentData.map((val) => {
+          temp.push({
+            Date: new Date(val1.localDate).toLocaleDateString(),
+            subject: val1.Subject,
+            name: val.name,
+            attendence: val.attendenceStatus,
+          });
+        });
+      }
+    });
+    arr.push(temp);
+  });
+  let farr = [];
+  let pfarr = [];
+  let tot;
+  let total = [];
+  let names = [];
+  let frequency;
+  let pfrequency;
+  arr.map((val) => {
+    frequency = {};
+    pfrequency = {};
+    tot = [];
+    val.map((e) => {
+      if (e.name in frequency) {
+        frequency[e.name]++;
+      } else {
+        frequency[e.name] = 1;
+      }
+      if (e.attendence === "Present") {
+        if (e.name in pfrequency) {
+          pfrequency[e.name]++;
+        } else {
+          pfrequency[e.name] = 1;
+        }
+      }
+    });
+    names.push(Object.keys(frequency));
+    for (let i = 0; i < arr.length - 1; i++) {
+      // console.log(Object.values(frequency)[i]);
+      tot.push({
+        name: Object.keys(frequency)[i],
+        total: Math.round(
+          (Object.values(pfrequency)[i] / Object.values(frequency)[i]) * 100
+        ),
+      });
+    }
+    total.push(tot);
+    farr.push(frequency);
+    pfarr.push(pfrequency);
+  });
+
+  let fallover = [];
+  let allover = {};
+  total.map((val) => {
+    val.map((val) => {
+      if (val.name in allover) {
+        allover[val.name] += val.total ? val.total : 0;
+      } else {
+        allover[val.name] = val.total ? val.total : 0;
+      }
+    });
+  });
+  // allover.push(fallover);
+
+  allover = Object.entries(allover);
+
+  console.log(allover);
+
+  res.json({
+    subjects: subject,
+    names: names[0],
+    attendence: total,
+    alloverdata: allover,
+  });
 });
 
 // ---------------------- DEPLOYMENT --------------

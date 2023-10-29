@@ -13,14 +13,13 @@ import {
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-const Attendence = () => {
+const Attendence = (props) => {
   const [startdate, setstartdate] = useState("");
   const [enddate, setenddate] = useState("");
   const [allover, setallover] = useState(0);
   const [sub, setsub] = useState([]);
   const [att, setatt] = useState([]);
-  const [particuler, setparticular] = useState([]);
-  const location = useLocation();
+  const [attendenceText, setattendenceText] = useState("THIS MONTH ATTENDENCE");
 
   let date = new Date();
   let tdate = date.getDate();
@@ -44,7 +43,7 @@ const Attendence = () => {
         body: JSON.stringify({
           start,
           end,
-          name: location.state.data.name,
+          name: props.name,
         }),
       }
     );
@@ -75,7 +74,7 @@ const Attendence = () => {
         mb={{ base: "50px", md: "0px", lg: "0px" }}
       >
         <Text textAlign={"center"} fontSize={"48px"}>
-          THIS MONTH ATTENDENCE
+          {attendenceText}
         </Text>
         <Box
           display={"flex"}
@@ -167,11 +166,20 @@ const Attendence = () => {
         justifyContent={"space-between"}
         margin={{ base: "30px 0px", md: "-20px", lg: "-20px" }}
       >
-        <Button onClick={() => SubmitHandler(lt, lt)} colorScheme="orange">
+        <Button
+          onClick={() => {
+            SubmitHandler(lt, lt);
+            setattendenceText(`TODAY'S ATTENDENCE`);
+          }}
+          colorScheme="orange"
+        >
           Today's Attendence
         </Button>
         <Button
-          onClick={() => SubmitHandler(Yesterday, Yesterday)}
+          onClick={() => {
+            SubmitHandler(Yesterday, Yesterday),
+              setattendenceText(`YESTERDAY'S ATTENDENCE`);
+          }}
           colorScheme="orange"
         >
           Yesterday's Attendence

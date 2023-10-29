@@ -252,7 +252,7 @@ const Attendencepage = (props) => {
                             md: "max-content",
                           }}
                         >
-                          {window.innerWidth > 500 ? "Take attendence" : "AT"}
+                          {window.innerWidth > 500 ? "Attendence Taken" : "AT"}
                         </Button>
                       ) : (
                         ""
