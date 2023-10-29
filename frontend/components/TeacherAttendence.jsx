@@ -10,6 +10,13 @@ import {
   Tr,
   Td,
   Tbody,
+  Container,
+  TableContainer,
+  Alert,
+  AlertIcon,
+  Text,
+  Toast,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import Attendence from "./Attendence";
@@ -22,6 +29,8 @@ const TeacherAttendence = () => {
   const [allover, setallover] = useState([]);
   const [page, setpage] = useState(false);
   const [name, setname] = useState("");
+  const [visibility, setvisibility] = useState("hidden");
+  const Toast = useToast();
   const [user, setuser] = useState({
     clas: "",
     div: "",
@@ -52,11 +61,23 @@ const TeacherAttendence = () => {
       }
     );
     const data = await res.json();
-    console.log(data);
-    setsubjects(data.subjects);
-    setnames(data.names);
-    setattendence(data.attendence);
-    setallover(data.alloverdata);
+    if (res.status === 400 || !data) {
+      Toast({
+        title: "error occurred",
+        description: data.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    } else {
+      console.log(data);
+      setsubjects(data.subjects);
+      setnames(data.names);
+      setattendence(data.attendence);
+      setallover(data.alloverdata);
+      setvisibility("");
+    }
   };
 
   return page ? (
@@ -109,50 +130,78 @@ const TeacherAttendence = () => {
           Get Attendence List
         </Button>
       </Box>
-      <Box>
-        <Table>
-          <Thead>
-            <Tr>
-              {/* <Td>Date</Td> */}
-              <Td>Name</Td>
-              {subjects.map((val, index) => {
-                return <Td key={index}>{val}</Td>;
-              })}
-              <Td>allover</Td>
-            </Tr>
-          </Thead>
-          <Tbody>
-            <Td>
-              {names.map((val, index) => {
+      <Box visibility={visibility}>
+        <Container
+          position={{ base: "static", md: "fixed", lg: "absolute" }}
+          left={"0"}
+          overflow={{ base: "scroll", md: "hidden", lg: "visible" }}
+          width={"100vw"}
+        >
+          {attendence ? (
+            <Text textAlign={"center"} width={"90vw"}>
+              Click On Any Student Name To Get Detailed Attendence
+            </Text>
+          ) : (
+            ""
+          )}
+          <Table width={"100vw"}>
+            <Thead>
+              <Tr>
+                <Td textAlign={"center"}>Name</Td>
+                {subjects.map((val, index) => {
+                  return (
+                    <Td key={index} textAlign={"center"}>
+                      {val}
+                    </Td>
+                  );
+                })}
+                <Td textAlign={"center"}>allover</Td>
+              </Tr>
+            </Thead>
+            <Tbody>
+              <Td>
+                {names.map((val, index) => {
+                  return (
+                    <Tr
+                      key={index}
+                      onClick={() => {
+                        setpage(true), setname(val);
+                      }}
+                      cursor={"pointer"}
+                      width={"20vw"}
+                    >
+                      <Td whiteSpace={"nowrap"} textAlign={"center"}>
+                        {val}
+                      </Td>
+                    </Tr>
+                  );
+                })}
+              </Td>
+              {attendence.map((val) => {
                 return (
-                  <Tr
-                    key={index}
-                    onClick={() => {
-                      setpage(true), setname(val);
-                    }}
-                    cursor={"pointer"}
-                  >
-                    {val}
-                  </Tr>
+                  <Td>
+                    {val.map((val, index) => {
+                      return (
+                        <Tr key={index}>
+                          <Td>{val.total ? val.total : 0}%</Td>
+                        </Tr>
+                      );
+                    })}
+                  </Td>
                 );
               })}
-            </Td>
-            {attendence.map((val) => {
-              return (
-                <Td>
-                  {val.map((val, index) => {
-                    return <Tr key={index}>{val.total ? val.total : 0}%</Tr>;
-                  })}
-                </Td>
-              );
-            })}
-            <Td>
-              {allover.map((val) => {
-                return <Tr>{val[1]}%</Tr>;
-              })}
-            </Td>
-          </Tbody>
-        </Table>
+              <Td>
+                {allover.map((val) => {
+                  return (
+                    <Tr>
+                      <Td>{val[1]}%</Td>
+                    </Tr>
+                  );
+                })}
+              </Td>
+            </Tbody>
+          </Table>
+        </Container>
       </Box>
     </div>
   );

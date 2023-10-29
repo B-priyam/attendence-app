@@ -624,6 +624,9 @@ app.post("/attendence/teacher", async (req, res) => {
   const start = new Date(st);
 
   const end = new Date(lt);
+  if (!clas || !div || !year) {
+    return res.status(400).json({ message: "Please provide all the details" });
+  }
   const get = await Attendence.find({
     Class: clas,
     Div: div,
@@ -633,99 +636,102 @@ app.post("/attendence/teacher", async (req, res) => {
       $lte: end.getTime(),
     },
   });
-  let subjects = [];
-  get.map((val) => {
-    if (val.Subject in subjects) {
-    } else {
-      subjects.push(val.Subject);
-    }
-  });
-  const subject = subjects.filter((v, i, self) => {
-    return i == self.indexOf(v);
-  });
 
-  let temp;
-  let arr = [];
-
-  subject.map((val) => {
-    temp = [];
-    get.map((val1) => {
-      if (val1.Subject === val) {
-        val1.StudentData.map((val) => {
-          temp.push({
-            Date: new Date(val1.localDate).toLocaleDateString(),
-            subject: val1.Subject,
-            name: val.name,
-            attendence: val.attendenceStatus,
-          });
-        });
-      }
-    });
-    arr.push(temp);
-  });
-  let farr = [];
-  let pfarr = [];
-  let tot;
-  let total = [];
-  let names = [];
-  let frequency;
-  let pfrequency;
-  arr.map((val) => {
-    frequency = {};
-    pfrequency = {};
-    tot = [];
-    val.map((e) => {
-      if (e.name in frequency) {
-        frequency[e.name]++;
-      } else {
-        frequency[e.name] = 1;
-      }
-      if (e.attendence === "Present") {
-        if (e.name in pfrequency) {
-          pfrequency[e.name]++;
+  if (get.length <= 0) {
+    console.log("not");
+    return res.status(400).json({ message: "data not found" });
+  } else {
+    try {
+      let subjects = [];
+      get.map((val) => {
+        if (val.Subject in subjects) {
         } else {
-          pfrequency[e.name] = 1;
+          subjects.push(val.Subject);
         }
-      }
-    });
-    names.push(Object.keys(frequency));
-    for (let i = 0; i < arr.length - 1; i++) {
-      // console.log(Object.values(frequency)[i]);
-      tot.push({
-        name: Object.keys(frequency)[i],
-        total: Math.round(
-          (Object.values(pfrequency)[i] / Object.values(frequency)[i]) * 100
-        ),
       });
+      const subject = subjects.filter((v, i, self) => {
+        return i == self.indexOf(v);
+      });
+
+      let temp;
+      let arr = [];
+
+      subject.map((val) => {
+        temp = [];
+        get.map((val1) => {
+          if (val1.Subject === val) {
+            val1.StudentData.map((val) => {
+              temp.push({
+                Date: new Date(val1.localDate).toLocaleDateString(),
+                subject: val1.Subject,
+                name: val.name,
+                attendence: val.attendenceStatus,
+              });
+            });
+          }
+        });
+        arr.push(temp);
+      });
+      let farr = [];
+      let pfarr = [];
+      let tot;
+      let total = [];
+      let names = [];
+      let frequency;
+      let pfrequency;
+      arr.map((val) => {
+        frequency = {};
+        pfrequency = {};
+        tot = [];
+        val.map((e) => {
+          if (e.name in frequency) {
+            frequency[e.name]++;
+          } else {
+            frequency[e.name] = 1;
+          }
+          if (e.attendence === "Present") {
+            if (e.name in pfrequency) {
+              pfrequency[e.name]++;
+            } else {
+              pfrequency[e.name] = 1;
+            }
+          }
+        });
+        names.push(Object.keys(frequency));
+        for (let i = 0; i < arr.length - 1; i++) {
+          tot.push({
+            name: Object.keys(frequency)[i],
+            total: Math.round(
+              (Object.values(pfrequency)[i] / Object.values(frequency)[i]) * 100
+            ),
+          });
+        }
+        total.push(tot);
+        farr.push(frequency);
+        pfarr.push(pfrequency);
+      });
+      let allover = {};
+      total.map((val) => {
+        val.map((val) => {
+          if (val.name in allover) {
+            allover[val.name] += val.total ? val.total : 0;
+          } else {
+            allover[val.name] = val.total ? val.total : 0;
+          }
+        });
+      });
+
+      allover = Object.entries(allover);
+      res.status(200).json({
+        subjects: subject,
+        names: names[0],
+        attendence: total,
+        alloverdata: allover,
+      });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
     }
-    total.push(tot);
-    farr.push(frequency);
-    pfarr.push(pfrequency);
-  });
-
-  let fallover = [];
-  let allover = {};
-  total.map((val) => {
-    val.map((val) => {
-      if (val.name in allover) {
-        allover[val.name] += val.total ? val.total : 0;
-      } else {
-        allover[val.name] = val.total ? val.total : 0;
-      }
-    });
-  });
-  // allover.push(fallover);
-
-  allover = Object.entries(allover);
-
-  console.log(allover);
-
-  res.json({
-    subjects: subject,
-    names: names[0],
-    attendence: total,
-    alloverdata: allover,
-  });
+  }
 });
 
 // ---------------------- DEPLOYMENT --------------
