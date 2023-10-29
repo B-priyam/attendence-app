@@ -73,8 +73,24 @@ const Attendence = (props) => {
         height={"max-content"}
         mb={{ base: "50px", md: "0px", lg: "0px" }}
       >
+        <Text
+          marginTop={"10px"}
+          fontSize={{ base: "15px", md: "20px", lg: "24px" }}
+        >
+          Name : {props.name}
+        </Text>
         <Text textAlign={"center"} fontSize={"48px"}>
           {attendenceText}
+          <Button
+            colorScheme="orange"
+            // position={{ base: "fixed", lg: "absolute" }}
+            position={{ base: "static", md: "static", lg: "absolute" }}
+            right={"10"}
+            top={"115"}
+            onClick={() => props.setpage(false)}
+          >
+            Go back
+          </Button>
         </Text>
         <Box
           display={"flex"}

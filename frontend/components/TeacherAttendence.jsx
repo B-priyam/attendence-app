@@ -12,12 +12,16 @@ import {
   Tbody,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import Attendence from "./Attendence";
+import { set } from "mongoose";
 
 const TeacherAttendence = () => {
   const [subjects, setsubjects] = useState([]);
   const [names, setnames] = useState([]);
   const [attendence, setattendence] = useState([]);
   const [allover, setallover] = useState([]);
+  const [page, setpage] = useState(false);
+  const [name, setname] = useState("");
   const [user, setuser] = useState({
     clas: "",
     div: "",
@@ -55,9 +59,9 @@ const TeacherAttendence = () => {
     setallover(data.alloverdata);
   };
 
-  console.log(attendence);
-
-  return (
+  return page ? (
+    <Attendence name={name} page={page} setpage={setpage} />
+  ) : (
     <div>
       <div
         style={{
@@ -120,7 +124,17 @@ const TeacherAttendence = () => {
           <Tbody>
             <Td>
               {names.map((val, index) => {
-                return <Tr key={index}>{val}</Tr>;
+                return (
+                  <Tr
+                    key={index}
+                    onClick={() => {
+                      setpage(true), setname(val);
+                    }}
+                    cursor={"pointer"}
+                  >
+                    {val}
+                  </Tr>
+                );
               })}
             </Td>
             {attendence.map((val) => {
