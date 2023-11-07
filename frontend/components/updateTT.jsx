@@ -53,9 +53,6 @@ const UpdateTT = () => {
     "friday",
     "saturday",
   ];
-  var date = new Date();
-  let today =
-    date.getDate() + "" + (date.getMonth() + 1) + "" + date.getFullYear();
   let currentDay = days[date.getDay()].toUpperCase();
 
   const submitHandler = async () => {
@@ -88,7 +85,6 @@ const UpdateTT = () => {
           currentdata,
           field,
           fieldData,
-          date: today,
         }),
       }
     );

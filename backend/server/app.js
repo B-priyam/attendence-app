@@ -155,12 +155,10 @@ app.get("/getTT/teacher", async (req, res) => {
   try {
     let day = req.query.day;
     const date = new Date();
-    let today =
-      date.getDate() + "" + (date.getMonth() + 1) + "" + date.getFullYear();
     const data = await TT.find({ day: day });
     data.map((val) => {
       val.Timetable.map(async (val) => {
-        if (Number(val.updatedDay) < Number(today)) {
+        if (val.updatedDay < date) {
           const update = await TT.updateOne(
             { day: day, "Timetable._id": val._id },
             {
@@ -175,7 +173,7 @@ app.get("/getTT/teacher", async (req, res) => {
 
     data.map((val) => {
       val.TempTT.map(async (val) => {
-        if (Number(val.date) < Number(today)) {
+        if (val.date < date) {
           const update = await TT.updateOne(
             { day: day, "Timetable.time": val.time },
             {
@@ -191,7 +189,7 @@ app.get("/getTT/teacher", async (req, res) => {
     });
     data.map((val) => {
       val.TempTT.map(async (val) => {
-        if (Number(val.date) < Number(today)) {
+        if (val.date < date) {
           const update = await TT.updateOne(
             { day: day, "TempTT.time": val.time },
             {
@@ -239,6 +237,8 @@ app.post("/postAttendence", async (req, res) => {
     updatedDay,
   } = req.body;
 
+  console.log(updatedDay);
+
   const data = new Attendence({
     Class: clas,
     Div,
@@ -251,15 +251,14 @@ app.post("/postAttendence", async (req, res) => {
 
   const day = req.query.day;
   const find = await TT.findOne({ day, Class: clas, div, year });
-  // res.send(find);
+  // console.log(find);
   if (find) {
     const update = await TT.updateOne(
       { day, Class: clas, div, year, "Timetable._id": id },
       {
         $set: {
           "Timetable.$.status": "taken",
-          "Timetable.$.updatedDay": updatedDay,
-          "Timetable.$.status": "taken",
+          "Timetable.$.updatedDay": new Date(),
         },
       }
     );
@@ -528,7 +527,7 @@ app.post("/updateTT", async (req, res) => {
               teacher: currentdata.teacher,
               subject: currentdata.subject,
               room: currentdata.room,
-              date: req.body.date,
+              date: new Date(),
             },
           },
         }

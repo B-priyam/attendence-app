@@ -29,6 +29,10 @@ const Attendencepage = (props) => {
     date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
   let currentDay = days[date.getDay()].toUpperCase();
 
+  useEffect(() => {
+    showdata();
+  }, []);
+
   const showdata = async () => {
     if (props.data.type === "student") {
       const res = await fetch(
@@ -69,7 +73,7 @@ const Attendencepage = (props) => {
       setusers(val);
     }
   };
-  showdata();
+  // showdata();
 
   const [page, setpage] = useState(false);
   const [data, setdata] = useState({

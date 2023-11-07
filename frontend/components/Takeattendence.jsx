@@ -76,7 +76,7 @@ const Takeattendence = (props) => {
       }
     );
     const data2 = await res.json();
-    // console.log(data2);
+    console.log(data2);
     if (!data2) {
       Toast({
         title: "error",
@@ -95,17 +95,12 @@ const Takeattendence = (props) => {
         isClosable: true,
         position: "top",
       });
+      () => {
+        new Promise((res) => setTimeout(res, 2000));
+      };
       window.location.reload(false);
     }
     setloading(false);
-  };
-  const changeColor = (color, index) => {
-    document.getElementsByClassName("buttons")[index].style.background =
-      "white";
-
-    document.getElementsByClassName(`button-${color}`)[
-      index
-    ].style.background = `${color}`;
   };
 
   return (
