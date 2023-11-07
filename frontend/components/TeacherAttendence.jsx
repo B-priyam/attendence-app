@@ -194,7 +194,7 @@ const TeacherAttendence = () => {
                 {allover.map((val) => {
                   return (
                     <Tr>
-                      <Td>{val[1]}%</Td>
+                      <Td>{Math.round(val[1] / subjects.length)}%</Td>
                     </Tr>
                   );
                 })}
