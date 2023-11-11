@@ -21,12 +21,12 @@ const Takeattendence = (props) => {
   const [loading, setloading] = useState(false);
   const Toast = useToast();
 
-  const uniquedata = data.filter(
+  let uniquedata = data.filter(
     (val, index, self) =>
       self.findLastIndex((val2) => val2.rollno === val.rollno) === index
   );
+  uniquedata = uniquedata.sort((a, b) => a.rollno - b.rollno);
 
-  // console.log(uniquedata);
   let date = new Date();
   let day =
     date.getDate() + "" + (date.getMonth() + 1) + "" + date.getFullYear();
