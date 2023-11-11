@@ -688,7 +688,7 @@ app.post("/attendence/teacher", async (req, res) => {
           } else {
             frequency[e.name] = 1;
           }
-          if (e.attendence === "Present") {
+          if (e.attendence === "Present" || e.attendence === "Late") {
             if (e.name in pfrequency) {
               pfrequency[e.name]++;
             } else {
@@ -697,7 +697,7 @@ app.post("/attendence/teacher", async (req, res) => {
           }
         });
         names.push(Object.keys(frequency));
-        for (let i = 0; i < arr.length - 1; i++) {
+        for (let i = 0; i < arr.length; i++) {
           tot.push({
             name: Object.keys(frequency)[i],
             total: Math.round(
@@ -721,6 +721,7 @@ app.post("/attendence/teacher", async (req, res) => {
       });
 
       allover = Object.entries(allover);
+
       res.status(200).json({
         subjects: subject,
         names: names[0],

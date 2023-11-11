@@ -44,12 +44,8 @@ const TeacherAttendence = () => {
   let date = new Date();
   let tdate = date.getDate();
   let month = date.getMonth() + 1;
-  let st = `${month < 10 ? "0" + month : month}-01-${date.getFullYear()}`;
-  let lt = `${month < 10 ? "0" + month : month}-${
-    tdate < 10 ? "0" + tdate : tdate
-  }-${date.getFullYear()}`;
 
-  const submithandler = async () => {
+  const submithandler = async (startDate, endDate) => {
     const res = await fetch(
       "https://attendence-app-nbtf.onrender.com/attendence/teacher",
       {
@@ -57,7 +53,7 @@ const TeacherAttendence = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ user, st: st, lt: lt }),
+        body: JSON.stringify({ user, st: startDate, lt: endDate }),
       }
     );
     const data = await res.json();
@@ -119,13 +115,25 @@ const TeacherAttendence = () => {
           ></Input>
         </FormControl>
       </div>
-      <Box width={"90vw"} display={"flex"} justifyContent={"center"}>
+      <Box
+        width={{ base: "95vw", lg: "80vw" }}
+        display={"flex"}
+        justifyContent={"center"}
+      >
         <Button
-          onClick={submithandler}
-          scrollSnapAlign={"center"}
+          onClick={() => {
+            submithandler(
+              `${month < 10 ? "0" + month : month}-01-${date.getFullYear()}`,
+              `${month < 10 ? "0" + month : month}-${
+                tdate < 10 ? "0" + tdate : tdate
+              }-${date.getFullYear()}`
+            );
+          }}
+          // scrollSnapAlign={"center"}
           colorScheme="orange"
-          width={"50%"}
-          textAlign={"center"}
+          // width={"50%"}
+          m={"1vh 0"}
+          // textAlign={"center"}
         >
           Get Attendence List
         </Button>
@@ -138,9 +146,44 @@ const TeacherAttendence = () => {
           width={"100vw"}
         >
           {attendence ? (
-            <Text textAlign={"center"} width={"90vw"}>
-              Click On Any Student Name To Get Detailed Attendence
-            </Text>
+            <>
+              <Box
+                m={"4vh 0"}
+                width={"90vw"}
+                display={"flex"}
+                justifyContent={"center"}
+              >
+                <Button
+                  colorScheme="orange"
+                  onClick={() => {
+                    submithandler(
+                      `${
+                        month < 10 ? "0" + (month - 1) : month - 1
+                      }-01-${date.getFullYear()}`,
+                      `${month < 10 ? "0" + (month - 1) : month - 1}-${
+                        tdate < 10 ? "0" + tdate : tdate
+                      }-${date.getFullYear()}`
+                    );
+                  }}
+                >
+                  Get Previous Month Attendence
+                </Button>
+              </Box>
+              <Box
+                width={{ base: "90vw", md: "100vw", lg: "100vw" }}
+                display={"flex"}
+                justifyContent={"center"}
+              >
+                <Text
+                  background={"orange.200"}
+                  textAlign={"center"}
+                  width={"90vw"}
+                  textShadow={"1px 0px 1px black"}
+                >
+                  Click On Any Student Name To Get Detailed Attendence
+                </Text>
+              </Box>
+            </>
           ) : (
             ""
           )}
