@@ -153,12 +153,15 @@ app.get("/getTT", async (req, res) => {
 
 app.get("/getTT/teacher", async (req, res) => {
   try {
+    let newDate;
     let day = req.query.day;
-    const date = new Date().toString();
+    let date = new Date().toLocaleDateString("en-sp");
     const data = await TT.find({ day: day });
     data.map((val) => {
       val.Timetable.map(async (val) => {
-        if (val.updatedDay < date) {
+        newDate = new Date(val.updatedDay).toLocaleDateString("en-sp");
+        if (newDate < date) {
+          // console.log("yess");
           const update = await TT.updateOne(
             { day: day, "Timetable._id": val._id },
             {
@@ -173,7 +176,8 @@ app.get("/getTT/teacher", async (req, res) => {
 
     data.map((val) => {
       val.TempTT.map(async (val) => {
-        if (val.date < date) {
+        newDate = new Date(val.date).toLocaleDateString("en-sp");
+        if (newDate < date) {
           const update = await TT.updateOne(
             { day: day, "Timetable.time": val.time },
             {
@@ -189,7 +193,8 @@ app.get("/getTT/teacher", async (req, res) => {
     });
     data.map((val) => {
       val.TempTT.map(async (val) => {
-        if (val.date < date) {
+        newDate = new Date(val.date).toLocaleDateString("en-sp");
+        if (newDate < date) {
           const update = await TT.updateOne(
             { day: day, "TempTT.time": val.time },
             {
@@ -237,8 +242,6 @@ app.post("/postAttendence", async (req, res) => {
     updatedDay,
   } = req.body;
 
-  console.log(updatedDay);
-
   const data = new Attendence({
     Class: clas,
     Div,
@@ -258,7 +261,7 @@ app.post("/postAttendence", async (req, res) => {
       {
         $set: {
           "Timetable.$.status": "taken",
-          "Timetable.$.updatedDay": new Date(),
+          "Timetable.$.updatedDay": new Date().toLocaleDateString("en-sp"),
         },
       }
     );
@@ -537,7 +540,7 @@ app.post("/updateTT", async (req, res) => {
               teacher: currentdata.teacher,
               subject: currentdata.subject,
               room: currentdata.room,
-              date: new Date(),
+              date: new Date().toLocaleDateString("en-sp"),
             },
           },
         }

@@ -140,9 +140,6 @@ const AddStudents = () => {
       password,
       confirmpassword,
     } = user;
-    div = div.toUpperCase();
-    year = year.toLowerCase();
-    clas = clas.toLowerCase();
     const res = await fetch(
       "https://attendence-app-nbtf.onrender.com/students",
       {
@@ -154,9 +151,9 @@ const AddStudents = () => {
           name: capitalize(name),
           Roll_no,
           Id_no,
-          clas,
-          div,
-          year,
+          clas: clas.toLowerCase(),
+          div: div.toUpperCase(),
+          year: year.toLowerCase(),
           email,
           password,
           profilePic: pic,

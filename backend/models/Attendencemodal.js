@@ -34,7 +34,6 @@ const AttendenceSchema = mongoose.Schema({
       rollno: String,
       attendenceStatus: {
         type: String,
-        default: date.getDay() + "" + date.getMonth() + "" + date.getFullYear(),
       },
     },
   ],
