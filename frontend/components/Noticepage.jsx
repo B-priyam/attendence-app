@@ -4,6 +4,7 @@ import "../css/noticepage.css";
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useLocation } from "react-router-dom";
 import CheckInternet from "./checkInternet";
+import addNotification from "react-push-notification";
 
 const Noticepage = (props) => {
   const date = new Date();
@@ -16,6 +17,7 @@ const Noticepage = (props) => {
   const [notices, setnotices] = useState([]);
   const Toast = useToast();
   const location = useLocation();
+
   const onAdd = async () => {
     const res = await fetch(
       "https://attendence-app-nbtf.onrender.com/postnotice",
@@ -48,6 +50,14 @@ const Noticepage = (props) => {
         duration: 5000,
         isClosable: true,
         position: "top",
+      });
+      addNotification({
+        title: "Attendance-App",
+        subtitle: "New Notice Added",
+        message: value,
+        theme: "orange",
+        native: true, // when using native, your OS will handle theming.
+        duration: 5000,
       });
       setvalue("");
     }
