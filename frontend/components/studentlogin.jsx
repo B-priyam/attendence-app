@@ -68,7 +68,9 @@ const Studentlogin = () => {
         isClosable: true,
         position: "top",
       });
-      navigate("/mainpage", { state: { data: data } });
+      navigate("/mainpage");
+      localStorage.setItem("user", data.Id_no);
+      localStorage.setItem("type", data.type);
     }
     setloading(false);
   };

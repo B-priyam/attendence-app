@@ -63,8 +63,9 @@ const TeachersLogin = () => {
         isClosable: true,
         position: "top",
       });
-      navigate("/mainpage", { state: { data: data } });
-      localStorage.setItem("user", data.name);
+      navigate("/mainpage");
+      localStorage.setItem("user", data.UID);
+      localStorage.setItem("type", data.type);
     }
     setloading(false);
   };

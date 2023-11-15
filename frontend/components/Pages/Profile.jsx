@@ -38,7 +38,7 @@ import {
 import AddStudents from "../AddStudents";
 import UpdateTT from "../updateTT";
 
-const Profile = () => {
+const Profile = (props) => {
   const [renderpage, setrenderpage] = useState("profile");
   const [modelname, setmodelname] = useState();
   const [Id_no, setId_no] = useState();
@@ -47,7 +47,7 @@ const Profile = () => {
   const btnref = React.useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { name, Class, email, year, div, type, UID } = location.state.data;
+  const { name, Class, email, year, div, type, UID } = props.data;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [loading, setloading] = useState(false);
   const [picdata, setpic] = useState("");
@@ -56,6 +56,7 @@ const Profile = () => {
 
   const Toast = useToast();
   const logoutPage = () => {
+    localStorage.clear();
     navigate("/");
   };
 
@@ -114,7 +115,7 @@ const Profile = () => {
   const deletepic = async () => {
     const res = await fetch(
       `https://attendence-app-nbtf.onrender.com/updateProfilePic?type=${type}&Id_no=${
-        type == "student" ? location.state.data.Id_no : UID
+        type == "student" ? props.data.Id_no : UID
       }`,
       {
         method: "POST",
@@ -223,7 +224,7 @@ const Profile = () => {
     e.preventDefault();
     const res = await fetch(
       `https://attendence-app-nbtf.onrender.com/editProfile?type=${type}&Id_no=${
-        type == "student" ? location.state.data.Id_no : UID
+        type == "student" ? props.data.Id_no : UID
       }`,
       {
         method: "POST",
@@ -285,8 +286,8 @@ const Profile = () => {
                 height={"100%"}
                 width={"100%"}
                 className="image"
-                src={location.state.data.profilePic}
-                name={location.state.data.name}
+                src={props.data.profilePic}
+                name={props.data.name}
                 fontSize={"100px"}
                 objectFit={"cover"}
                 style={{ fontSize: "larger" }}

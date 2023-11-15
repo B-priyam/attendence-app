@@ -5,7 +5,7 @@ import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useLocation } from "react-router-dom";
 import CheckInternet from "./checkInternet";
 
-const Noticepage = () => {
+const Noticepage = (props) => {
   const date = new Date();
   let hrs = date.getHours();
   if (hrs > 12) {
@@ -111,7 +111,7 @@ const Noticepage = () => {
 
   return (
     <div>
-      {location.state.data.type === "teacher" ? (
+      {props.data === "teacher" ? (
         <div className="inputBox">
           <p>
             <Textarea
@@ -184,7 +184,7 @@ const Noticepage = () => {
                       </div>
                     </li>
                     <span>
-                      {location.state.data.type === "teacher" ? (
+                      {props.data === "teacher" ? (
                         <DeleteIcon
                           color={"red"}
                           float={"right"}

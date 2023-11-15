@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Tab,
   TabList,
@@ -13,6 +13,7 @@ import {
 import SignUp from "../studentlogin";
 import TeachersLogin from "../TeachersLogin";
 import TeacherSignup from "../TeacherSignup";
+import { useNavigate } from "react-router-dom";
 
 const Homepage = () => {
   const [login, setlogin] = useState(true);
@@ -29,6 +30,14 @@ const Homepage = () => {
   const changedisplay1 = () => {
     setdisplay("none");
   };
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      navigate("/mainpage");
+    }
+  });
 
   return (
     <div>

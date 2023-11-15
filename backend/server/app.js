@@ -277,10 +277,13 @@ app.post("/signin/teacher", async (req, res) => {
   try {
     let token;
     const { UID, email, password } = req.body;
-    if (!UID || !email || !password) {
-      res.status(400).send("pls fill the data");
+    if (req.body.status !== "find" && (!UID || !email || !password)) {
+      return res.status(400).json("pls fill the data");
     }
     const userdata = await Teachers.findOne({ UID: UID });
+    if (req.body.status === "find") {
+      return res.status(200).json({ userdata });
+    }
     if (userdata) {
       const verifypass = await bcrypt.compare(password, userdata.password);
       if (verifypass && userdata.email === email) {
@@ -305,10 +308,13 @@ app.post("/signin/student", async (req, res) => {
   try {
     let token;
     const { Id_no, email, password } = req.body;
-    if (!email || !Id_no || !password) {
-      res.status(400).send("fill all the fields");
+    if (req.body.status !== "find" && (!email || !Id_no || !password)) {
+      return res.status(400).send("fill all the fields");
     }
     const data = await students.findOne({ Id_no: Id_no });
+    if (req.body.status === "find") {
+      return res.status(200).json({ data });
+    }
     if (data) {
       const verifypass = await bcrypt.compare(password, data.password);
       if (verifypass && data.email === email) {
@@ -417,7 +423,7 @@ app.post("/updateProfilePic", async (req, res) => {
             }
           );
           return res.status(200).json({
-            message: " Kindly Relogin to see the updates",
+            message: " Kindly refresh page to see the updates",
             data: req.body,
           });
         }
@@ -697,7 +703,7 @@ app.post("/attendence/teacher", async (req, res) => {
           }
         });
         names.push(Object.keys(frequency));
-        for (let i = 0; i < arr.length; i++) {
+        for (let i = 0; i < names[0].length; i++) {
           tot.push({
             name: Object.keys(frequency)[i],
             total: Math.round(
@@ -722,6 +728,7 @@ app.post("/attendence/teacher", async (req, res) => {
 
       allover = Object.entries(allover);
 
+      console.log(arr.length);
       res.status(200).json({
         subjects: subject,
         names: names[0],

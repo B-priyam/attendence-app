@@ -12,7 +12,7 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import { redirect, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Attendencepage from "../Attendencepage";
 import Noticepage from "../Noticepage";
 import "/css/mainpage.css";
@@ -22,12 +22,42 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import CheckInternet from "../checkInternet";
 import Attendence from "../Attendence";
 import TeacherAttendence from "../TeacherAttendence";
+import { redirect } from "react-router-dom";
 
 const MainPage = () => {
-  const [value, setvalue] = useState([]);
-
-  const location = useLocation();
   const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const type = localStorage.getItem("type");
+  useEffect(() => {
+    if (!user) {
+      return navigate("/");
+    } else {
+      find();
+    }
+  }, []);
+
+  let Type = type === "teacher" ? "UID" : "Id_no";
+  // console.log(Type);
+  const [value, setvalue] = useState([]);
+  const find = async () => {
+    const res = await fetch(`http://localhost:5000/signin/${type}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        [Type]: user,
+        status: "find",
+      }),
+    });
+    const data = await res.json();
+    if (res.status === 200 && data) {
+      // console.log(data);
+
+      type === "teacher" ? setvalue(data.userdata) : setvalue(data.data);
+    }
+  };
 
   const date = () => {
     var today = new Date();
@@ -42,16 +72,16 @@ const MainPage = () => {
   const [page, setpage] = useState("home");
   const pagerender = () => {
     if (page === "home") {
-      return <Attendencepage data={location.state.data} />;
+      return <Attendencepage data={value} />;
     } else if (page === "notice") {
-      return <Noticepage />;
+      return <Noticepage data={type} />;
     } else if (page === "profile") {
-      return <Profile />;
+      return <Profile data={value} />;
     } else {
-      if (location.state.data.type === "student") {
-        return <Attendence name={location.state.data.name} />;
+      if (value.type === "student") {
+        return <Attendence name={value.name} />;
       } else {
-        return <TeacherAttendence name={location.state.data.name} />;
+        return <TeacherAttendence name={value.name} />;
       }
     }
   };
@@ -118,8 +148,8 @@ const MainPage = () => {
           </Box>
           <Box>
             <Avatar
-              name={location.state.data.name}
-              src={location.state.data.profilePic}
+              name={value.name}
+              src={value.profilePic}
               size={"md"}
               onClick={() => setpage("profile")}
               cursor={"pointer"}

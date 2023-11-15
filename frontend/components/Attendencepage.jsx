@@ -15,6 +15,10 @@ import Takeattendence from "./Takeattendence";
 const Attendencepage = (props) => {
   const [users, setusers] = useState([]);
 
+  useEffect(() => {
+    showdata();
+  });
+
   const days = [
     "monday",
     "monday",
@@ -28,10 +32,6 @@ const Attendencepage = (props) => {
   let today =
     date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
   let currentDay = days[date.getDay()].toUpperCase();
-
-  useEffect(() => {
-    showdata();
-  }, []);
 
   const showdata = async () => {
     if (props.data.type === "student") {
@@ -73,7 +73,6 @@ const Attendencepage = (props) => {
       setusers(val);
     }
   };
-  // showdata();
 
   const [page, setpage] = useState(false);
   const [data, setdata] = useState({

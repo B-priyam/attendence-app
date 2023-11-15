@@ -13,7 +13,6 @@ import {
   Avatar,
 } from "@chakra-ui/react";
 import "/css/takeattendence.css";
-import { useNavigate } from "react-router-dom";
 
 const Takeattendence = (props) => {
   const [students, setstudents] = useState([]);
