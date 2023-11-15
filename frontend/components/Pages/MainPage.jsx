@@ -41,16 +41,19 @@ const MainPage = () => {
   // console.log(Type);
   const [value, setvalue] = useState([]);
   const find = async () => {
-    const res = await fetch(`http://localhost:5000/signin/${type}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        [Type]: user,
-        status: "find",
-      }),
-    });
+    const res = await fetch(
+      `https://attendence-apps.onrender.com/signin/${type}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          [Type]: user,
+          status: "find",
+        }),
+      }
+    );
     const data = await res.json();
     if (res.status === 200 && data) {
       // console.log(data);
