@@ -38,11 +38,10 @@ const MainPage = () => {
   }, []);
 
   let Type = type === "teacher" ? "UID" : "Id_no";
-  // console.log(Type);
   const [value, setvalue] = useState([]);
   const find = async () => {
     const res = await fetch(
-      `https://attendence-apps.onrender.com/signin/${type}`,
+      `https://attendence-app-nbtf.onrender.com/signin/${type}`,
       {
         method: "POST",
         headers: {
