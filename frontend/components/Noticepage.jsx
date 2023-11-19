@@ -56,7 +56,7 @@ const Noticepage = (props) => {
         subtitle: "New Notice Added",
         message: value,
         theme: "orange",
-        native: true, // when using native, your OS will handle theming.
+        // native: true, // when using native, your OS will handle theming.
         duration: 5000,
       });
       setvalue("");

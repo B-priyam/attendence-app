@@ -137,7 +137,6 @@ const Profile = (props) => {
     } else {
       Toast({
         title: "Data updated successfully",
-        description: data.message,
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -281,6 +280,12 @@ const Profile = (props) => {
         position: "top",
       });
       return;
+    }
+
+    if (modelname === "div") {
+      valuedata = valuedata.toUpperCase();
+    } else if (modelname === "year" || modelname === "Class") {
+      valuedata = valuedata.toLowerCase();
     }
 
     const res = await fetch(
