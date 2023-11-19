@@ -91,10 +91,10 @@ const TeacherAttendence = () => {
           <FormLabel>Class</FormLabel>
           <Select placeholder="Select Class" onChange={change} name="clas">
             <option value={"bscit"}>Bsc.IT</option>
-            <option value={"B.com"}>B.com</option>
-            <option value={"BAF"}>BAF</option>
-            <option value={"BBI"}>BBI</option>
-            <option value={"BMS"}>BMS</option>
+            <option value={"b.com"}>B.com</option>
+            <option value={"bcaf"}>BAF</option>
+            <option value={"bbi"}>BBI</option>
+            <option value={"bms"}>BMS</option>
           </Select>
         </FormControl>
         <FormControl isRequired>
