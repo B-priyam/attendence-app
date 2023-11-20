@@ -32,7 +32,6 @@ import {
   MenuItem,
   Divider,
   Avatar,
-  Img,
   FormErrorMessage,
 } from "@chakra-ui/react";
 import AddStudents from "../AddStudents";
@@ -222,6 +221,17 @@ const Profile = (props) => {
 
     if (value === "div") {
       valuedata = valuedata.toUpperCase();
+    } else if (value === "year" || value === "Class") {
+      valuedata = valuedata.toLowerCase();
+    }
+
+    const capitalize = (str) => {
+      const lower = str.toLowerCase();
+      return `${lower[0].toUpperCase()}${lower.slice(1)}`;
+    };
+
+    if (value === "name") {
+      valuedata = capitalize(valuedata);
     }
 
     setloading(true);
@@ -596,9 +606,7 @@ const Profile = (props) => {
                             placeholder="Enter the new value"
                             name="newValue"
                             value={valuedata}
-                            onChange={(e) =>
-                              setvaluedata(e.target.value.toLowerCase())
-                            }
+                            onChange={(e) => setvaluedata(e.target.value)}
                           ></Input>
                           <FormErrorMessage>{errorMessage}</FormErrorMessage>
                         </FormControl>

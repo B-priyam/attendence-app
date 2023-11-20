@@ -19,7 +19,7 @@ const AddStudents = () => {
   const [loading, setloading] = useState(false);
   const [pic, setpic] = useState("");
   const [cld, setcld] = useState("");
-  const [user, setuser] = useState({
+  let [user, setuser] = useState({
     name: "",
     Roll_no: "",
     Id_no: "",
@@ -140,6 +140,9 @@ const AddStudents = () => {
       password,
       confirmpassword,
     } = user;
+    div = div.toUpperCase();
+    year = year.toLowerCase();
+    clas = clas.toLowerCase();
     const res = await fetch(
       "https://attendence-app-nbtf.onrender.com/students",
       {
