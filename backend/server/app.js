@@ -154,7 +154,7 @@ app.get("/getTT", async (req, res) => {
 app.get("/getTT/teacher", async (req, res) => {
   try {
     let day = req.query.day;
-    const date = new Date();
+    const date = new Date().toString();
     const data = await TT.find({ day: day });
     data.map((val) => {
       val.Timetable.map(async (val) => {
@@ -339,6 +339,7 @@ app.post("/deletestudent", async (req, res) => {
   try {
     const Id_no = req.query.Id_no;
     const deletedata = await students.deleteOne({ Id_no: Id_no });
+    console.log(deletedata);
     if (deletedata) {
       return res.status(200).json({ message: "Student Deleted Successfully" });
     } else {
@@ -358,6 +359,9 @@ app.post("/updatestudent", async (req, res) => {
         $set: req.body,
       }
     );
+    if (!update) {
+      return res.status(400).json({ message: "student does not exists" });
+    }
     if (update.modifiedCount > 0) {
       return res
         .status(200)
@@ -551,9 +555,6 @@ app.post("/updateTT", async (req, res) => {
   });
 });
 
-let a = new Date();
-// console.log(a.toDateString());
-
 app.post("/attendence", async (req, res) => {
   const { name } = req.body;
   let end = new Date(req.body.end);
@@ -704,31 +705,44 @@ app.post("/attendence/teacher", async (req, res) => {
         });
         names.push(Object.keys(frequency));
         for (let i = 0; i < names[0].length; i++) {
-          tot.push({
-            name: Object.keys(frequency)[i],
-            total: Math.round(
-              (Object.values(pfrequency)[i] / Object.values(frequency)[i]) * 100
-            ),
-          });
+          if (Object.keys(frequency)[i] === undefined) {
+            tot.push({
+              name: Object.keys(frequency)[i],
+              total: 0,
+            });
+          } else {
+            tot.push({
+              name: Object.keys(frequency)[i],
+              total: Math.round(
+                (Object.values(pfrequency)[i] / Object.values(frequency)[i]) *
+                  100
+              ),
+            });
+          }
         }
+        // console.log(tot);
         total.push(tot);
         farr.push(frequency);
         pfarr.push(pfrequency);
       });
+
+      // console.log(total);
+
       let allover = {};
       total.map((val) => {
         val.map((val) => {
-          if (val.name in allover) {
-            allover[val.name] += val.total ? val.total : 0;
-          } else {
-            allover[val.name] = val.total ? val.total : 0;
-          }
+          if (val.name !== undefined)
+            if (val.name in allover) {
+              allover[val.name] += val.total ? val.total : 0;
+            } else {
+              allover[val.name] = val.total ? val.total : 0;
+            }
         });
       });
 
       allover = Object.entries(allover);
 
-      console.log(arr.length);
+      // console.log(arr.length);
       res.status(200).json({
         subjects: subject,
         names: names[0],

@@ -46,16 +46,13 @@ const TeacherAttendence = () => {
   let month = date.getMonth() + 1;
 
   const submithandler = async (startDate, endDate) => {
-    const res = await fetch(
-      "https://attendence-app-nbtf.onrender.com/attendence/teacher",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user, st: startDate, lt: endDate }),
-      }
-    );
+    const res = await fetch("http://localhost:5000/attendence/teacher", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ user, st: startDate, lt: endDate }),
+    });
     const data = await res.json();
     if (res.status === 400 || !data) {
       Toast({

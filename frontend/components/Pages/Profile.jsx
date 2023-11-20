@@ -7,7 +7,6 @@ import {
   DeleteIcon,
   ChevronDownIcon,
 } from "@chakra-ui/icons";
-// import { Cloudinary } from "cloudinary";
 import {
   Box,
   Button,
@@ -34,36 +33,34 @@ import {
   Divider,
   Avatar,
   Img,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import AddStudents from "../AddStudents";
 import UpdateTT from "../updateTT";
-
 const Profile = (props) => {
   const [renderpage, setrenderpage] = useState("profile");
   const [modelname, setmodelname] = useState();
   const [Id_no, setId_no] = useState();
   const [value, setvalue] = useState();
-  const [valuedata, setvaluedata] = useState();
+  let [valuedata, setvaluedata] = useState();
   const btnref = React.useRef(null);
   const navigate = useNavigate();
-  const location = useLocation();
   const { name, Class, email, year, div, type, UID } = props.data;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [loading, setloading] = useState(false);
   const [picdata, setpic] = useState("");
   const [cld, setcld] = useState("");
-  const [changepic, setchangepic] = useState(false);
-
+  const [notValid, setNotValid] = useState(false);
+  const [idValid, setIdValid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const Toast = useToast();
   const logoutPage = () => {
     localStorage.clear();
     navigate("/");
   };
 
-  // console.log(pic, cld);
   const postDetails = async (pic) => {
     setloading(true);
-    // console.log(picdata);
     if (pic === undefined) {
       Toast({
         title: "please select an image",
@@ -153,6 +150,14 @@ const Profile = (props) => {
 
   const deleteStudent = async (e) => {
     e.preventDefault();
+
+    setIdValid(false);
+    if (!/^([1-9]{6,})$/.test(Id_no)) {
+      setIdValid(true);
+      setErrorMessage("Id_no cannot be less than 6 digits");
+      return document.querySelector("#id").focus();
+    }
+
     const res = await fetch(
       `https://attendence-app-nbtf.onrender.com/deletestudent?Id_no=${Id_no}`,
       {
@@ -174,9 +179,9 @@ const Profile = (props) => {
       });
     } else {
       Toast({
-        title: "Data Updated Successfully",
+        title: "Student Deleted Successfully",
         description: e.message,
-        status: "error",
+        status: "success",
         duration: 5000,
         isClosable: true,
         position: "top",
@@ -186,6 +191,40 @@ const Profile = (props) => {
   };
   const updateStudent = async (e) => {
     e.preventDefault();
+
+    setIdValid(false);
+    setNotValid(false);
+    if (!/^([0-9]{6,})$/.test(Id_no)) {
+      setIdValid(true);
+      setErrorMessage("Id_no cannot be less than 6 digits");
+      return document.querySelector("#id").focus();
+    }
+
+    if (
+      value === "email" &&
+      !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(valuedata)
+    ) {
+      setNotValid(true);
+      setErrorMessage("Please provide a valid email Id");
+      return document.querySelector("#valuedata").focus();
+    }
+
+    if (!valuedata) {
+      Toast({
+        title: "Kindly fill all the details",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+      return;
+    }
+
+    if (value === "div") {
+      valuedata = valuedata.toUpperCase();
+    }
+
+    setloading(true);
     const res = await fetch(
       `https://attendence-app-nbtf.onrender.com/updatestudent?Id_no=${Id_no}`,
       {
@@ -212,7 +251,7 @@ const Profile = (props) => {
       Toast({
         title: "Data Updated Successfully",
         description: e.message,
-        status: "error",
+        status: "success",
         duration: 5000,
         isClosable: true,
         position: "top",
@@ -222,6 +261,18 @@ const Profile = (props) => {
   };
   const editProfile = async (e) => {
     e.preventDefault();
+
+    if (!valuedata) {
+      Toast({
+        title: "kindly fill all the data",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+      return;
+    }
+
     const res = await fetch(
       `https://attendence-app-nbtf.onrender.com/editProfile?type=${type}&Id_no=${
         type == "student" ? props.data.Id_no : UID
@@ -507,7 +558,14 @@ const Profile = (props) => {
                     <AddStudents />
                   ) : modelname == "update" ? (
                     <VStack spacing="5px" color="black">
-                      <FormControl id="ID_no" isRequired>
+                      <FormControl
+                        id="id"
+                        isRequired
+                        isInvalid={idValid}
+                        onChange={() => {
+                          setIdValid(false);
+                        }}
+                      >
                         <FormLabel>Id no</FormLabel>
                         <Input
                           placeholder="Enter Id_no of the student"
@@ -515,27 +573,35 @@ const Profile = (props) => {
                           name="Id_no"
                           value={Id_no}
                         ></Input>
+                        <FormErrorMessage>{errorMessage}</FormErrorMessage>
                       </FormControl>
-                      <FormControl isRequired>
+                      <FormControl onChange={() => setNotValid(false)}>
                         <FormLabel>Choose the field to update</FormLabel>
                         <Select onChange={(e) => setvalue(e.target.value)}>
                           <option value={"name"}>Name</option>
                           <option value={"Roll_no"}>Roll no</option>
-                          <option value={"Id_no"}>Id no</option>
                           <option value={"email"}>Email</option>
                           <option value={"Class"}>Class</option>
                           <option value={"div"}>Div</option>
                           <option value={"year"}>Year</option>
                         </Select>
-                      </FormControl>
-                      <FormControl isRequired>
-                        <FormLabel>New Value</FormLabel>
-                        <Input
-                          placeholder="Enter the new value"
-                          name="newValue"
-                          value={valuedata}
-                          onChange={(e) => setvaluedata(e.target.value)}
-                        ></Input>
+                        <FormControl
+                          isRequired
+                          id="valuedata"
+                          isInvalid={notValid}
+                        >
+                          <FormLabel>New Value</FormLabel>
+                          <Input
+                            type={value === "Roll_no" ? "number" : "text"}
+                            placeholder="Enter the new value"
+                            name="newValue"
+                            value={valuedata}
+                            onChange={(e) =>
+                              setvaluedata(e.target.value.toLowerCase())
+                            }
+                          ></Input>
+                          <FormErrorMessage>{errorMessage}</FormErrorMessage>
+                        </FormControl>
                       </FormControl>
                       <Button
                         colorScheme="yellow"
@@ -549,13 +615,20 @@ const Profile = (props) => {
                     </VStack>
                   ) : modelname == "delete" ? (
                     <VStack spacing="5px" color="black">
-                      <FormControl id="ID_no" isRequired>
+                      <FormControl
+                        id="id"
+                        isRequired
+                        isInvalid={idValid}
+                        onChange={() => setIdValid(false)}
+                      >
                         <FormLabel>Id no</FormLabel>
                         <Input
+                          type="number"
                           placeholder="Enter Id_no of the student"
                           onChange={(e) => setId_no(e.target.value)}
                           name="Id_no"
                         ></Input>
+                        <FormErrorMessage>{errorMessage}</FormErrorMessage>
                       </FormControl>
                       <Button
                         colorScheme="red"

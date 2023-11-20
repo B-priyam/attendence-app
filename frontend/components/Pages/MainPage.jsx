@@ -55,8 +55,6 @@ const MainPage = () => {
     );
     const data = await res.json();
     if (res.status === 200 && data) {
-      // console.log(data);
-
       type === "teacher" ? setvalue(data.userdata) : setvalue(data.data);
     }
   };

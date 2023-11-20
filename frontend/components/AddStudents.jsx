@@ -6,10 +6,14 @@ import {
   Select,
   NumberInput,
   NumberInputField,
+  FormErrorMessage,
+  FormHelperText,
+  FormErrorIcon,
 } from "@chakra-ui/react";
 import { VStack } from "@chakra-ui/layout";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { useToast } from "@chakra-ui/react";
+import { color } from "framer-motion";
 
 const AddStudents = () => {
   const [loading, setloading] = useState(false);
@@ -26,11 +30,10 @@ const AddStudents = () => {
     password: "",
     confirmpassword: "",
   });
-
-  const capitalize = (str) => {
-    const lower = str.toLowerCase();
-    return `${lower[0].toUpperCase()}${lower.slice(1)}`;
-  };
+  const [emailValid, setemailValid] = useState(false);
+  const [passValid, setpassValid] = useState(false);
+  const [idValid, setIdValid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const change = (e) => {
     const { name, value } = e.target;
@@ -97,8 +100,34 @@ const AddStudents = () => {
       return;
     }
   };
+
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    setIdValid(false);
+    setemailValid(false);
+    setpassValid(false);
+    if (!/^([0-9]{6,})$/.test(user.Id_no)) {
+      setIdValid(true);
+      setErrorMessage("Id_no cannot be less than 6 digits");
+      return document.querySelector("#id").focus();
+    }
+
+    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(user.email)) {
+      setemailValid(true);
+      setErrorMessage("Please provide a valid email Id");
+      return document.querySelector("#email").focus();
+    }
+    if (!/^([a-z0-9A-Z]{8,})$/.test(user.password)) {
+      setpassValid(true);
+      setErrorMessage("Password cannot be less than 8 characters");
+      return document.querySelector("#password").focus();
+    }
+    const capitalize = (str) => {
+      const lower = str.toLowerCase();
+      return `${lower[0].toUpperCase()}${lower.slice(1)}`;
+    };
+
     setloading(true);
     const {
       name,
@@ -157,20 +186,18 @@ const AddStudents = () => {
   };
   return (
     <VStack spacing="5px" color="black">
-      <FormControl id="ID_no" isRequired>
+      <FormControl id="id" isRequired isInvalid={idValid}>
         <FormLabel>Id no</FormLabel>
-        <NumberInput
-          // type="number"
-          min={100000}
-          max={999999}
-        >
+        <NumberInput>
           <NumberInputField
             placeholder="Enter your UID number"
             onChange={change}
             name="Id_no"
             value={user.Id_no}
+            // id="id"
           />
         </NumberInput>
+        <FormErrorMessage>{errorMessage}</FormErrorMessage>
       </FormControl>
       <FormControl id="Roll_No" isRequired>
         <FormLabel>Roll no</FormLabel>
@@ -218,7 +245,7 @@ const AddStudents = () => {
           <option value="ty">TY</option>
         </Select>
       </FormControl>
-      <FormControl id="email" isRequired>
+      <FormControl id="email" isRequired isInvalid={emailValid}>
         <FormLabel>Email</FormLabel>
         <Input
           placeholder="Enter your email"
@@ -226,8 +253,9 @@ const AddStudents = () => {
           value={user.email}
           name="email"
         ></Input>
+        <FormErrorMessage color="orange">{errorMessage}</FormErrorMessage>
       </FormControl>
-      <FormControl id="password" isRequired>
+      <FormControl id="password" isRequired isInvalid={passValid}>
         <FormLabel>Password</FormLabel>
         <InputGroup>
           <Input
@@ -243,6 +271,7 @@ const AddStudents = () => {
             </Button>
           </InputRightElement>
         </InputGroup>
+        <FormErrorMessage color="orange">{errorMessage}</FormErrorMessage>
       </FormControl>
       <FormControl id="cpassword" isRequired>
         <FormLabel>Confirm Password</FormLabel>
