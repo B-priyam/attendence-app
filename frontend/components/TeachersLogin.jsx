@@ -77,6 +77,7 @@ const TeachersLogin = () => {
         <Input
           type="number"
           placeholder="Enter your UID"
+          value={UID}
           onChange={(e) => setUID(e.target.value)}
         ></Input>
       </FormControl>
@@ -84,6 +85,7 @@ const TeachersLogin = () => {
         <FormLabel>Email</FormLabel>
         <Input
           placeholder="Enter your email"
+          value={email}
           onChange={(e) => setemail(e.target.value)}
         ></Input>
       </FormControl>
@@ -93,6 +95,7 @@ const TeachersLogin = () => {
           <Input
             type={show ? "text" : "password"}
             placeholder="enter your password"
+            value={password}
             onChange={(e) => setpassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
@@ -110,6 +113,20 @@ const TeachersLogin = () => {
         isLoading={loading}
       >
         Login
+      </Button>
+
+      <Button
+        variant="solid"
+        colorScheme="red"
+        width="100%"
+        onClick={(e) => {
+          setUID("123456");
+          setemail("guestuser@gmail.com");
+          setpassword("12345678");
+          submitHandler(e);
+        }}
+      >
+        Login as guest user
       </Button>
     </VStack>
   );

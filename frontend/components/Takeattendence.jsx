@@ -138,11 +138,12 @@ const Takeattendence = (props) => {
                 d="flex"
                 alignItems="center"
                 justifyContent="center"
-                p={3}
+                flexDir={"row"}
+                p={2}
                 bg={"#0E2954"}
                 maxWidth={{ base: "160px", lg: "210px" }}
                 minW={{ lg: "200px" }}
-                m="40px 0px 15px 0px"
+                m="30px 0px 15px 0px"
                 borderRadius="10px"
                 borderWidth="1px"
               >
@@ -266,6 +267,7 @@ const Takeattendence = (props) => {
               margin: "0px auto",
               width: "50vw",
               fontSize: "20px",
+              marginBottom: "10px",
             }}
             onClick={submitHandler}
             isLoading={loading}

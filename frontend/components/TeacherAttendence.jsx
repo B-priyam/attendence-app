@@ -90,6 +90,7 @@ const TeacherAttendence = () => {
         <FormControl isRequired>
           <FormLabel>Class</FormLabel>
           <Select placeholder="Select Class" onChange={change} name="clas">
+            <option value={"class-1"}>Guest class</option>
             <option value={"bscit"}>Bsc.IT</option>
             <option value={"b.com"}>B.com</option>
             <option value={"bcaf"}>BAF</option>
@@ -100,6 +101,7 @@ const TeacherAttendence = () => {
         <FormControl isRequired>
           <FormLabel>year</FormLabel>
           <Select placeholder="Select Year" onChange={change} name="year">
+            <option value="fy">Guest year</option>
             <option value="fy">FY</option>
             <option value="sy">SY</option>
             <option value="ty">TY</option>
@@ -108,7 +110,7 @@ const TeacherAttendence = () => {
         <FormControl id="div" isRequired>
           <FormLabel>Div</FormLabel>
           <Input
-            placeholder="Enter division"
+            placeholder="A"
             onChange={change}
             name="div"
             value={user.div.toUpperCase()}

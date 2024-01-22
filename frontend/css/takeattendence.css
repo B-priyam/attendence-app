@@ -1,7 +1,7 @@
 .data {
   display: flex;
   flex-wrap: wrap;
-  gap: 6vh;
+  gap: 4vh;
   align-items: center;
 }
 

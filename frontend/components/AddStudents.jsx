@@ -221,6 +221,7 @@ const AddStudents = () => {
       <FormControl id="class" isRequired>
         <FormLabel>class</FormLabel>
         <Select placeholder="Select Class" onChange={change} name="clas">
+          <option value={"class-1"}>Guest user</option>
           <option value={"bscit"}>Bsc.IT</option>
           <option value={"b.com"}>B.com</option>
           <option value={"bcaf"}>BAF</option>
@@ -240,6 +241,7 @@ const AddStudents = () => {
       <FormControl id="name" isRequired>
         <FormLabel>Year</FormLabel>
         <Select name="year" onChange={change} placeholder="Choose your Year">
+          <option value="fy">Guest user</option>
           <option value="fy">FY</option>
           <option value="sy">SY</option>
           <option value="ty">TY</option>

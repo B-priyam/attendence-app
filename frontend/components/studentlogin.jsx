@@ -127,6 +127,21 @@ const Studentlogin = () => {
         >
           Login
         </Button>
+        <Button
+          variant="solid"
+          colorScheme="red"
+          width="100%"
+          onClick={() => {
+            setuser({
+              Id_no: "123456",
+              email: "guestuser@gmail.com",
+              password: "12345678",
+            });
+            submitHandler();
+          }}
+        >
+          Login as guest user
+        </Button>
       </VStack>
     </>
   );
